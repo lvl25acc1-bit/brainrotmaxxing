@@ -1,0 +1,6 @@
+{
+  "name": "Instagram Reels",
+  "type": "webview",
+  "url": "https://www.instagram.com/reels/",
+  "order": 20
+}

@@ -1,0 +1,19 @@
+{
+  "_doc": "Copy this file (without the underscore prefix) to add a module. Files starting with _ are ignored.",
+  "_types": {
+    "webview": { "url": "https://example.com", "order": 99 },
+    "webview-tabs": {
+      "tabs": [
+        { "label": "Tab A", "url": "https://a.com", "default": true },
+        { "label": "Tab B", "url": "https://b.com" }
+      ]
+    },
+    "terminal": { "command": "your-cli", "args": [], "cwd": "/optional/path" }
+  },
+  "_fields": {
+    "name": "required — shown in the tile header",
+    "type": "required — webview | webview-tabs | terminal",
+    "id": "optional — defaults to filename without .json",
+    "order": "optional number — lower renders earlier, default 99"
+  }
+}

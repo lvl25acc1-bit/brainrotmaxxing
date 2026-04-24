@@ -1,0 +1,6 @@
+{
+  "name": "X",
+  "type": "webview",
+  "url": "https://x.com/home",
+  "order": 10
+}

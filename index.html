@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>BRAINROTMAXXING</title>
+<link rel="stylesheet" href="node_modules/@xterm/xterm/css/xterm.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="toolbar">
+  <div class="toolbar-left">
+    <span class="logo">
+      <svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="1" y="1" width="10" height="10" rx="2" fill="#e11d1d"/>
+        <rect x="13" y="1" width="10" height="10" rx="2" fill="#f0f0f0"/>
+        <rect x="1" y="13" width="10" height="10" rx="2" fill="#f0f0f0"/>
+        <rect x="13" y="13" width="10" height="10" rx="2" fill="#e11d1d"/>
+      </svg>
+      <span class="logo-text">BRAINROTMAXXING</span>
+    </span>
+    <button id="command-palette-btn" class="command-button" title="Open command palette">
+      <span class="command-button-text">Search tiles, layouts, actions</span>
+      <kbd>⌘K</kbd>
+    </button>
+  </div>
+  <div id="layout-tabs" class="layout-tabs" aria-label="Saved layouts"></div>
+  <div class="tbar-actions" aria-label="Workspace actions">
+    <button id="add-tile-btn" class="primary-action" title="Add a web tile, terminal, or closed module">+ Tile</button>
+    <button id="module-manager-btn" title="Create and edit modules">Modules</button>
+    <button id="edit-mode-btn" title="Enter edit mode (drag/resize tiles on a freeform canvas)">✎ Edit</button>
+    <button id="cancel-edit-btn" title="Cancel edit mode and restore the last saved layout" hidden>Cancel</button>
+    <button id="save-layout-btn" title="Save open tiles, sizes, URLs, mute states, and grid settings">Save</button>
+    <button id="layout-btn" title="Canvas layout and snap settings">Layout</button>
+    <button id="chrome-import-btn" title="Local workaround: copy Google/YouTube login cookies from Chrome on this Mac">Cookies</button>
+    <button id="reset-btn" title="Reset all tile positions and sizes to the built-in layout">Reset</button>
+  </div>
+</div>
+<div id="workspace-status" class="workspace-status">
+  <span id="status-layout">Layout</span>
+  <span id="status-tiles">Tiles</span>
+  <span id="status-mode">Ready</span>
+  <span class="status-shortcut">⌘K command palette</span>
+</div>
+<div id="save-layout-menu" class="popover hidden">
+  <div class="section">
+    <div class="section-title">Save layout</div>
+    <label class="field-row">
+      <span>Name</span>
+      <input type="text" id="layout-save-name" placeholder="Trading, Coding, News">
+    </label>
+    <label class="field-row">
+      <span>Slot</span>
+      <select id="layout-save-slot"></select>
+    </label>
+    <div class="popover-actions">
+      <button id="save-slot-btn">Save slot</button>
+      <button id="new-slot-btn" type="button">New slot</button>
+    </div>
+  </div>
+</div>
+<div id="layout-menu" class="popover hidden">
+  <div class="section">
+    <div class="section-title">Layout presets</div>
+    <div class="preset-row">
+      <button data-layout-preset="compact">Compact</button>
+      <button data-layout-preset="default">Default</button>
+      <button data-layout-preset="wide">Wide</button>
+      <button data-layout-preset="focus">Focus</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Workspace</div>
+    <div class="hint-grid">
+      <span>Drag headers in Edit mode</span>
+      <span>Resize from any edge</span>
+      <span>Esc closes menus or focus</span>
+      <span>⌘S saves current slot</span>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Layout slots</div>
+    <div class="slot-list" id="layout-slot-list"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Canvas</div>
+    <label class="setting-row">
+      <span>Snap lock</span>
+      <input type="checkbox" id="layout-locked">
+    </label>
+    <label class="setting-row">
+      <span>Preset columns</span>
+      <input type="number" id="layout-columns" min="2" max="8" step="1">
+    </label>
+    <label class="setting-row">
+      <span>Preset height</span>
+      <input type="number" id="layout-row-height" min="150" max="420" step="10">
+    </label>
+  </div>
+</div>
+<div id="add-menu" class="popover hidden">
+  <div class="section">
+    <div class="section-title">Closed tiles</div>
+    <input type="search" id="module-search" class="menu-search" placeholder="Search modules">
+    <div id="closed-tiles-list"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Quick add (temporary)</div>
+    <div class="quick-row">
+      <input type="text" id="quick-url" placeholder="url, e.g., reddit.com">
+      <button id="quick-url-btn">+ Web</button>
+    </div>
+    <div class="quick-row">
+      <input type="text" id="quick-cmd" placeholder="command, e.g., htop">
+      <button id="quick-cmd-btn">+ Term</button>
+    </div>
+  </div>
+</div>
+<div id="grid" class="grid"></div>
+<div id="module-manager" class="manager-overlay hidden" role="dialog" aria-modal="true" aria-label="Module manager">
+  <div class="manager-panel">
+    <div class="manager-header">
+      <div>
+        <div class="manager-title">Modules</div>
+        <div id="module-manager-subtitle" class="manager-subtitle">Create, edit, and organize tiles</div>
+      </div>
+      <button id="module-manager-close-btn" type="button" title="Close">×</button>
+    </div>
+    <div class="manager-body">
+      <aside class="manager-sidebar">
+        <div class="manager-search-row">
+          <input type="search" id="module-manager-search" placeholder="Search modules">
+          <button id="module-new-btn" type="button">New</button>
+        </div>
+        <div id="module-manager-list" class="manager-list"></div>
+      </aside>
+      <form id="module-form" class="module-form">
+        <div class="form-grid">
+          <label>
+            <span>Name</span>
+            <input type="text" id="module-name" required>
+          </label>
+          <label>
+            <span>ID</span>
+            <input type="text" id="module-id" required>
+          </label>
+          <label>
+            <span>Type</span>
+            <select id="module-type">
+              <option value="webview">Web</option>
+              <option value="webview-tabs">Tabbed web</option>
+              <option value="terminal">Terminal</option>
+            </select>
+          </label>
+          <label>
+            <span>Category</span>
+            <input type="text" id="module-category">
+          </label>
+          <label>
+            <span>Icon</span>
+            <input type="text" id="module-icon" maxlength="12">
+          </label>
+          <label>
+            <span>Order</span>
+            <input type="number" id="module-order" min="0" max="999" step="1">
+          </label>
+          <label>
+            <span>Cols</span>
+            <input type="number" id="module-cols" min="1" max="8" step="1">
+          </label>
+          <label>
+            <span>Rows</span>
+            <input type="number" id="module-rows" min="1" max="6" step="1">
+          </label>
+        </div>
+
+        <div class="module-type-fields" data-module-fields="webview">
+          <label>
+            <span>URL</span>
+            <input type="url" id="module-url" placeholder="https://example.com">
+          </label>
+        </div>
+
+        <div class="module-type-fields hidden" data-module-fields="webview-tabs">
+          <label>
+            <span>Tabs</span>
+            <textarea id="module-tabs" rows="7" placeholder="BBC | https://www.bbc.com/news&#10;HN | https://news.ycombinator.com/"></textarea>
+          </label>
+        </div>
+
+        <div class="module-type-fields hidden" data-module-fields="terminal">
+          <label>
+            <span>Command</span>
+            <input type="text" id="module-command" placeholder="codex">
+          </label>
+          <label>
+            <span>Args</span>
+            <input type="text" id="module-args" placeholder="--help">
+          </label>
+          <label>
+            <span>CWD</span>
+            <input type="text" id="module-cwd" placeholder="~/project">
+          </label>
+        </div>
+
+        <div id="module-form-error" class="form-error" hidden></div>
+        <div class="manager-actions">
+          <button id="module-delete-btn" type="button">Delete</button>
+          <button id="module-duplicate-btn" type="button">Duplicate</button>
+          <button id="module-save-btn" type="submit">Save module</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="command-palette" class="command-palette hidden" role="dialog" aria-modal="true" aria-label="Command palette">
+  <div class="command-panel">
+    <div class="command-search-row">
+      <input type="search" id="command-query" placeholder="Search actions, layouts, tiles">
+      <button id="command-close-btn" type="button" title="Close">×</button>
+    </div>
+    <div id="command-list" class="command-list"></div>
+  </div>
+</div>
+<script src="node_modules/@xterm/xterm/lib/xterm.js"></script>
+<script src="node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+<script src="renderer.js"></script>
+</body>
+</html>

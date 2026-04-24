@@ -1,0 +1,13 @@
+{
+  "name": "News",
+  "type": "webview-tabs",
+  "order": 60,
+  "tabs": [
+    { "label": "BBC", "url": "https://www.bbc.com/news", "default": true },
+    { "label": "Reuters", "url": "https://www.reuters.com/" },
+    { "label": "AP", "url": "https://apnews.com/" },
+    { "label": "CNN", "url": "https://www.cnn.com/" },
+    { "label": "NYT", "url": "https://www.nytimes.com/" },
+    { "label": "HN", "url": "https://news.ycombinator.com/" }
+  ]
+}

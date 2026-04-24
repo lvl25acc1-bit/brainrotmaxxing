@@ -1,0 +1,6 @@
+{
+  "name": "TikTok",
+  "type": "webview",
+  "url": "https://www.tiktok.com/foryou",
+  "order": 40
+}

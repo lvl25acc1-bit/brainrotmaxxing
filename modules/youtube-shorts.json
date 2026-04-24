@@ -1,0 +1,6 @@
+{
+  "name": "YouTube Shorts",
+  "type": "webview",
+  "url": "https://www.youtube.com/shorts",
+  "order": 30
+}

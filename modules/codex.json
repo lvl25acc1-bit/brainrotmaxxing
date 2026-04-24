@@ -1,0 +1,7 @@
+{
+  "name": "Codex",
+  "type": "terminal",
+  "command": "/Applications/Codex.app/Contents/Resources/codex",
+  "cwd": "/Users/davidbass/Documents/FinancelModels/BRAINROTMAXXING",
+  "order": 80
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Claude Code",
+  "type": "terminal",
+  "command": "/Users/davidbass/.local/bin/claude",
+  "cwd": "/Users/davidbass/Documents/FinancelModels/BRAINROTMAXXING",
+  "order": 70
+}

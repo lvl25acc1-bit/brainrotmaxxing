@@ -1,0 +1,6 @@
+{
+  "name": "Twitch",
+  "type": "webview",
+  "url": "https://www.twitch.tv/directory/following",
+  "order": 50
+}
