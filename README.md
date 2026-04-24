@@ -1,6 +1,7 @@
-# BrainrotMaxxing
 
-FRY YOUR BRAIN CONSUME THE SLOP.
+# BrainrotMaxxing
+<img width="2764" height="1535" alt="Brainrot2" src="https://github.com/user-attachments/assets/b14ae31f-35f6-4b28-a3d0-d64f3679e572" />
+67
 
 ## Features
 
