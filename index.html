@@ -19,82 +19,139 @@
       <span class="logo-text">BRAINROTMAXXING</span>
     </span>
     <button id="command-palette-btn" class="command-button" title="Open command palette">
-      <span class="command-button-text">Search tiles, layouts, actions</span>
+      <span class="command-button-text">Search rot, tiles, layouts</span>
       <kbd>⌘K</kbd>
     </button>
   </div>
-  <div id="layout-tabs" class="layout-tabs" aria-label="Saved layouts"></div>
   <div class="tbar-actions" aria-label="Workspace actions">
     <button id="add-tile-btn" class="primary-action" title="Add a web tile, terminal, or closed module">+ Tile</button>
     <button id="module-manager-btn" title="Create and edit modules">Modules</button>
-    <button id="edit-mode-btn" title="Enter edit mode (drag/resize tiles on a freeform canvas)">✎ Edit</button>
+    <button id="edit-mode-btn" title="Enter edit mode (drag/resize tiles on the grid)">✎ Edit</button>
     <button id="cancel-edit-btn" title="Cancel edit mode and restore the last saved layout" hidden>Cancel</button>
-    <button id="save-layout-btn" title="Save open tiles, sizes, URLs, mute states, and grid settings">Save</button>
-    <button id="layout-btn" title="Canvas layout and snap settings">Layout</button>
+    <button id="layout-btn" title="Saved layouts, presets, and grid settings">Layout</button>
     <button id="chrome-import-btn" title="Local workaround: copy Google/YouTube login cookies from Chrome on this Mac">Cookies</button>
-    <button id="reset-btn" title="Reset all tile positions and sizes to the built-in layout">Reset</button>
   </div>
 </div>
 <div id="workspace-status" class="workspace-status">
   <span id="status-layout">Layout</span>
   <span id="status-tiles">Tiles</span>
+  <span id="status-rot">Rot 0</span>
+  <span id="status-session">00:00</span>
   <span id="status-mode">Ready</span>
-  <span class="status-shortcut">⌘K command palette</span>
-</div>
-<div id="save-layout-menu" class="popover hidden">
-  <div class="section">
-    <div class="section-title">Save layout</div>
-    <label class="field-row">
-      <span>Name</span>
-      <input type="text" id="layout-save-name" placeholder="Trading, Coding, News">
-    </label>
-    <label class="field-row">
-      <span>Slot</span>
-      <select id="layout-save-slot"></select>
-    </label>
-    <div class="popover-actions">
-      <button id="save-slot-btn">Save slot</button>
-      <button id="new-slot-btn" type="button">New slot</button>
-    </div>
-  </div>
+  <span id="status-chaos" class="status-shortcut">Chaos off</span>
 </div>
 <div id="layout-menu" class="popover hidden">
-  <div class="section">
-    <div class="section-title">Layout presets</div>
-    <div class="preset-row">
-      <button data-layout-preset="compact">Compact</button>
-      <button data-layout-preset="default">Default</button>
-      <button data-layout-preset="wide">Wide</button>
-      <button data-layout-preset="focus">Focus</button>
+  <div class="layout-menu-tabs" role="tablist" aria-label="Layout menu">
+    <button type="button" class="active" data-layout-menu-tab="saved">Saved</button>
+    <button type="button" data-layout-menu-tab="presets">Presets</button>
+    <button type="button" data-layout-menu-tab="grid">Grid</button>
+  </div>
+  <div class="layout-menu-panel" data-layout-menu-panel="saved">
+    <div class="section">
+      <div class="section-title">Save layout</div>
+      <label class="field-row">
+        <span>Name</span>
+        <input type="text" id="layout-save-name" placeholder="Trading, Coding, News">
+      </label>
+      <label class="field-row">
+        <span>Slot</span>
+        <select id="layout-save-slot"></select>
+      </label>
+      <div class="popover-actions">
+        <button id="save-slot-btn">Save slot</button>
+        <button id="new-slot-btn" type="button">New slot</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Layout slots</div>
+      <div class="slot-list" id="layout-slot-list"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Startup</div>
+      <div class="popover-actions">
+        <button id="startup-default-btn" type="button">Make current default</button>
+      </div>
     </div>
   </div>
-  <div class="section">
-    <div class="section-title">Workspace</div>
-    <div class="hint-grid">
-      <span>Drag headers in Edit mode</span>
-      <span>Resize from any edge</span>
-      <span>Esc closes menus or focus</span>
-      <span>⌘S saves current slot</span>
+  <div class="layout-menu-panel hidden" data-layout-menu-panel="presets">
+    <div class="section">
+      <div class="section-title">Canvas presets</div>
+      <div class="preset-row">
+        <button data-layout-preset="compact">Compact</button>
+        <button data-layout-preset="default">Default</button>
+        <button data-layout-preset="wide">Wide</button>
+        <button data-layout-preset="focus">Focus</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Brainrot presets</div>
+      <div id="rot-preset-list" class="preset-row rot-preset-row"></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Edit preset</div>
+      <label class="field-row">
+        <span>Preset</span>
+        <select id="rot-edit-select"></select>
+      </label>
+      <label class="field-row">
+        <span>Name</span>
+        <input type="text" id="rot-edit-label">
+      </label>
+      <div class="preset-edit-actions">
+        <button id="rot-load-btn" type="button">Load</button>
+        <button id="rot-save-current-btn" type="button">Save Current</button>
+        <button id="rot-reset-preset-btn" type="button">Reset</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Chaos</div>
+      <label class="setting-row">
+        <span>Chaos mode</span>
+        <input type="checkbox" id="chaos-enabled">
+      </label>
+      <label class="setting-row">
+        <span>Focus every</span>
+        <input type="number" id="chaos-interval" min="10" max="180" step="5">
+      </label>
+    </div>
+    <div class="section">
+      <div class="section-title">Session</div>
+      <div class="rot-stats">
+        <span id="rot-stat-time">00:00</span>
+        <span id="rot-stat-score">Rot 0</span>
+        <span id="rot-stat-audio">0 audio</span>
+        <span id="rot-stat-tiles">0 tiles</span>
+      </div>
     </div>
   </div>
-  <div class="section">
-    <div class="section-title">Layout slots</div>
-    <div class="slot-list" id="layout-slot-list"></div>
-  </div>
-  <div class="section">
-    <div class="section-title">Canvas</div>
-    <label class="setting-row">
-      <span>Snap lock</span>
-      <input type="checkbox" id="layout-locked">
-    </label>
-    <label class="setting-row">
-      <span>Preset columns</span>
-      <input type="number" id="layout-columns" min="2" max="8" step="1">
-    </label>
-    <label class="setting-row">
-      <span>Preset height</span>
-      <input type="number" id="layout-row-height" min="150" max="420" step="10">
-    </label>
+  <div class="layout-menu-panel hidden" data-layout-menu-panel="grid">
+    <div class="section">
+      <div class="section-title">Workspace</div>
+      <div class="hint-grid">
+        <span>Drag headers in Edit mode</span>
+        <span>Resize pushes neighbors</span>
+        <span>Esc closes menus or focus</span>
+        <span>⌘S saves current slot</span>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Canvas</div>
+      <label class="setting-row">
+        <span>Grid lines</span>
+        <input type="checkbox" id="layout-locked">
+      </label>
+      <label class="setting-row">
+        <span>Columns</span>
+        <input type="number" id="layout-columns" min="8" max="24" step="1">
+      </label>
+      <label class="setting-row">
+        <span>Cell height</span>
+        <input type="number" id="layout-row-height" min="48" max="180" step="4">
+      </label>
+      <div class="popover-actions">
+        <button id="reset-btn" type="button">Reset tiles</button>
+      </div>
+    </div>
   </div>
 </div>
 <div id="add-menu" class="popover hidden">
@@ -223,6 +280,7 @@
 </div>
 <script src="node_modules/@xterm/xterm/lib/xterm.js"></script>
 <script src="node_modules/@xterm/addon-fit/lib/addon-fit.js"></script>
+<script src="layout-engine.js"></script>
 <script src="renderer.js"></script>
 </body>
 </html>

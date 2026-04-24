@@ -1,0 +1,7 @@
+{
+  "name": "Bloomberg Markets",
+  "type": "webview",
+  "url": "https://www.bloomberg.com/markets",
+  "category": "Finance",
+  "order": 102
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Hacker News",
+  "type": "webview",
+  "url": "https://news.ycombinator.com/",
+  "category": "News",
+  "order": 64
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Gemini",
+  "type": "webview",
+  "url": "https://gemini.google.com/app",
+  "category": "AI",
+  "order": 90
+}

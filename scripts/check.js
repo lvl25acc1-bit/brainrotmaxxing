@@ -7,6 +7,7 @@ const root = path.resolve(__dirname, '..');
 const jsFiles = [
   'main.js',
   'preload.js',
+  'layout-engine.js',
   'renderer.js',
   'webview-preload.js',
   'scripts/check.js',

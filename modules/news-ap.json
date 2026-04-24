@@ -1,0 +1,7 @@
+{
+  "name": "AP News",
+  "type": "webview",
+  "url": "https://apnews.com/",
+  "category": "News",
+  "order": 63
+}

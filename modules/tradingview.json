@@ -1,0 +1,7 @@
+{
+  "name": "TradingView",
+  "type": "webview",
+  "url": "https://www.tradingview.com/markets/",
+  "category": "Finance",
+  "order": 101
+}

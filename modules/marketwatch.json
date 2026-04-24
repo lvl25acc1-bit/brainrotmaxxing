@@ -1,0 +1,7 @@
+{
+  "name": "MarketWatch",
+  "type": "webview",
+  "url": "https://www.marketwatch.com/",
+  "category": "Finance",
+  "order": 103
+}

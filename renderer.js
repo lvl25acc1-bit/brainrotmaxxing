@@ -10,24 +10,99 @@ const SIZE_CYCLE = [
 const LEGACY_SIZES = { S: SIZE_CYCLE[0], M: SIZE_CYCLE[1], T: SIZE_CYCLE[2], L: SIZE_CYCLE[3] };
 const SIZES_KEY = 'brainrot:sizes:v2';
 const RECTS_KEY = 'brainrot:rects:v1';
-const LAYOUT_KEY = 'brainrot:layout:v2';
+const LAYOUT_KEY = 'brainrot:layout:v3';
+const GRID_LAYOUTS_KEY = 'brainrot:grid-layouts:v2';
 const MUTES_KEY = 'brainrot:mutes:v1';
-const ORDER_KEY = 'brainrot:order:v1';
 const SAVED_STATE_KEY_BASE = 'brainrot:saved-state:v1';
+const STARTUP_STATE_KEY = 'brainrot:startup-state:v1';
 const EDIT_MODE_KEY = 'brainrot:edit-mode:v1';
 const ACTIVE_SLOT_KEY = 'brainrot:active-slot';
 const LAYOUT_SLOT_META_KEY = 'brainrot:layout-slot-meta:v1';
 const DEFAULT_LAYOUT_SLOT_COUNT = 4;
 const MAX_LAYOUT_SLOTS = 8;
-const MIN_TILE_W = 260;
-const MIN_TILE_H = 170;
-const SNAP_STEP = 12;
 const CANVAS_PAD = 8;
+const GRID_RESOLUTION = 2;
 const LAYOUT_PRESETS = {
-  compact: { columns: 5, rowHeight: 180, gap: 2, locked: true },
-  default: { columns: 4, rowHeight: 260, gap: 3, locked: true },
-  wide: { columns: 6, rowHeight: 235, gap: 3, locked: true },
-  focus: { columns: 3, rowHeight: 310, gap: 3, locked: true },
+  compact: { columns: 12, rowHeight: 64, gap: 6, locked: true },
+  default: { columns: 12, rowHeight: 76, gap: 8, locked: true },
+  wide: { columns: 14, rowHeight: 76, gap: 8, locked: true },
+  focus: { columns: 10, rowHeight: 84, gap: 8, locked: true },
+};
+const CHAOS_MODE_KEY = 'brainrot:chaos-mode:v1';
+const CHAOS_INTERVAL_KEY = 'brainrot:chaos-interval:v1';
+const ROT_PRESET_OVERRIDES_KEY = 'brainrot:rot-preset-overrides:v2';
+const DEFAULT_CHAOS_INTERVAL = 30;
+const STARTUP_PRESET_KEY = 'default-brainrot';
+const ROT_PRESETS = {
+  'default-brainrot': {
+    label: 'Default Brainrot',
+    layout: 'wide',
+    gridResolution: 2,
+    layoutSettings: { columns: 8, rowHeight: 180, gap: 3, locked: true },
+    modules: ['tiktok', 'youtube-shorts', 'instagram', 'x', 'twitch', 'codex', 'news'],
+    grids: {
+      tiktok: { col: 7, row: 0, colSpan: 3, rowSpan: 7 },
+      'youtube-shorts': { col: 4, row: 0, colSpan: 3, rowSpan: 7 },
+      instagram: { col: 10, row: 0, colSpan: 3, rowSpan: 7 },
+      x: { col: 0, row: 0, colSpan: 4, rowSpan: 19 },
+      twitch: { col: 4, row: 7, colSpan: 6, rowSpan: 12 },
+      codex: { col: 13, row: 0, colSpan: 3, rowSpan: 7 },
+      news: { col: 10, row: 7, colSpan: 6, rowSpan: 12 },
+    },
+  },
+  'locked-in': {
+    label: 'Locked In',
+    layout: 'wide',
+    gridResolution: 2,
+    layoutSettings: { columns: 14, rowHeight: 76, gap: 8, locked: true },
+    modules: ['codex', 'claude-code'],
+    grids: {
+      codex: { col: 9, row: 0, colSpan: 9, rowSpan: 19 },
+      'claude-code': { col: 0, row: 0, colSpan: 9, rowSpan: 19 },
+    },
+  },
+  vibecodemaxxer: {
+    label: 'VibeCodemaxxer',
+    layout: 'wide',
+    gridResolution: 2,
+    layoutSettings: { columns: 14, rowHeight: 76, gap: 8, locked: true },
+    modules: ['tiktok', 'instagram', 'codex', 'youtube-shorts', 'claude-code', 'x'],
+    grids: {
+      tiktok: { col: 16, row: 0, colSpan: 4, rowSpan: 13 },
+      instagram: { col: 20, row: 0, colSpan: 4, rowSpan: 13 },
+      codex: { col: 6, row: 0, colSpan: 10, rowSpan: 13 },
+      'youtube-shorts': { col: 20, row: 13, colSpan: 4, rowSpan: 17 },
+      'claude-code': { col: 6, row: 13, colSpan: 7, rowSpan: 17 },
+      x: { col: 0, row: 0, colSpan: 6, rowSpan: 30 },
+    },
+  },
+  'news-fiend': {
+    label: 'News Fiend',
+    layout: 'wide',
+    gridResolution: 2,
+    layoutSettings: { columns: 14, rowHeight: 76, gap: 8, locked: true },
+    modules: ['news-bbc', 'news-reuters', 'news-ap', 'tradingview', 'x'],
+    grids: {
+      'news-bbc': { col: 0, row: 0, colSpan: 10, rowSpan: 13 },
+      'news-reuters': { col: 10, row: 0, colSpan: 10, rowSpan: 13 },
+      'news-ap': { col: 0, row: 13, colSpan: 10, rowSpan: 14 },
+      tradingview: { col: 10, row: 13, colSpan: 10, rowSpan: 14 },
+      x: { col: 20, row: 0, colSpan: 8, rowSpan: 27 },
+    },
+  },
+  'performative-trader': {
+    label: 'Performative Trader',
+    layout: 'wide',
+    gridResolution: 2,
+    layoutSettings: { columns: 14, rowHeight: 76, gap: 8, locked: true },
+    modules: ['yahoo-finance', 'tradingview', 'bloomberg-markets', 'marketwatch'],
+    grids: {
+      'yahoo-finance': { col: 0, row: 0, colSpan: 14, rowSpan: 12 },
+      tradingview: { col: 14, row: 0, colSpan: 14, rowSpan: 12 },
+      'bloomberg-markets': { col: 0, row: 12, colSpan: 14, rowSpan: 16 },
+      marketwatch: { col: 14, row: 12, colSpan: 14, rowSpan: 16 },
+    },
+  },
 };
 const DEFAULT_SPANS = {
   x: { cols: 1, rows: 2 },
@@ -36,6 +111,15 @@ const DEFAULT_SPANS = {
   tiktok: { cols: 1, rows: 2 },
   twitch: { cols: 2, rows: 2 },
   news: { cols: 2, rows: 2 },
+  'news-bbc': { cols: 2, rows: 2 },
+  'news-reuters': { cols: 2, rows: 2 },
+  'news-ap': { cols: 2, rows: 2 },
+  'news-hn': { cols: 2, rows: 2 },
+  gemini: { cols: 2, rows: 2 },
+  'yahoo-finance': { cols: 2, rows: 2 },
+  tradingview: { cols: 2, rows: 2 },
+  'bloomberg-markets': { cols: 2, rows: 2 },
+  marketwatch: { cols: 2, rows: 2 },
   'claude-code': { cols: 2, rows: 2 },
   codex: { cols: 2, rows: 2 },
 };
@@ -44,10 +128,9 @@ let allModules = [];
 const tiles = [];
 let sizes = loadSizes();
 let tileRects = loadRects();
+let gridLayouts = loadGridLayouts();
 let layout = loadLayout();
 let mutes = loadMutes();
-let tileOrder = loadOrder();
-let initializing = true;
 let webviewPreloadUrl = null;
 let editMode = loadEditMode();
 let currentSlot = localStorage.getItem(ACTIVE_SLOT_KEY) || '1';
@@ -57,19 +140,43 @@ let commandItems = [];
 let commandActiveIndex = 0;
 let moduleManagerSelectedId = null;
 let moduleManagerMode = 'new';
+const sessionStartedAt = Date.now();
+let chaosMode = localStorage.getItem(CHAOS_MODE_KEY) === 'true';
+let chaosIntervalSeconds = clampInt(localStorage.getItem(CHAOS_INTERVAL_KEY), 10, 180, DEFAULT_CHAOS_INTERVAL);
+let chaosTimer = null;
+let statusTimer = null;
+let transientPresetActive = false;
+let startupDefaultActive = false;
+let rotPresetOverrides = loadRotPresetOverrides();
+let selectedRotPresetKey = Object.keys(ROT_PRESETS)[0];
+let layoutResizeFrame = 0;
+let activeLayoutMenuTab = 'saved';
+let appReady = false;
 
 (async function init() {
   [allModules, webviewPreloadUrl] = await Promise.all([
     window.appAPI.listModules(),
     window.appAPI.webviewPreloadUrl(),
   ]);
-  const savedState = loadSavedState(currentSlot);
-  let startupTiles = tilesFromSavedState(savedState);
-  if (!savedState) startupTiles = applyOrderToStartup(startupTiles, tileOrder);
-  if (savedState && savedState.layout) layout = normalizeLayout(savedState.layout);
-  if (savedState && savedState.sizes) sizes = savedState.sizes;
-  if (savedState && savedState.rects) tileRects = savedState.rects;
-  if (savedState && savedState.mutes) mutes = savedState.mutes;
+  const startupState = loadStartupState();
+  const savedState = startupState || loadSavedState(currentSlot);
+  let startupTiles;
+  if (savedState) {
+    startupTiles = tilesFromSavedState(savedState);
+    if (savedState.layout) layout = normalizeLayout(savedState.layout);
+    if (savedState.sizes) sizes = savedState.sizes;
+    if (savedState.rects) tileRects = savedState.rects;
+    if (savedState.gridLayouts) gridLayouts = normalizeSavedGridMap(savedState.gridLayouts, sourceGridResolution(savedState));
+    if (savedState.mutes) mutes = savedState.mutes;
+    startupDefaultActive = !!startupState;
+  } else {
+    startupTiles = tilesFromStartupPreset();
+    selectedRotPresetKey = STARTUP_PRESET_KEY;
+    transientPresetActive = true;
+    sizes = {};
+    tileRects = {};
+    gridLayouts = {};
+  }
   document.body.classList.toggle('is-editing', editMode);
   applyLayout();
   wireToolbar();
@@ -77,6 +184,7 @@ let moduleManagerMode = 'new';
     addTile(tile.module, {
       temporary: tile.temporary,
       span: tile.span,
+      grid: tile.grid,
       rect: tile.rect,
       muted: tile.muted,
     });
@@ -85,8 +193,11 @@ let moduleManagerMode = 'new';
   updateEditButton();
   renderLayoutSlots();
   updateWorkspaceStatus();
-  initializing = false;
-  saveOrder();
+  renderRotPresetControls();
+  syncChaosControls();
+  startStatusTimer();
+  setChaosMode(chaosMode, { silent: true });
+  appReady = true;
 })();
 
 function loadJson(key, fallback) {
@@ -204,36 +315,20 @@ function saveRects() {
   localStorage.setItem(RECTS_KEY, JSON.stringify(tileRects));
 }
 
+function loadGridLayouts() {
+  return loadJson(GRID_LAYOUTS_KEY, {});
+}
+
+function saveGridLayouts() {
+  localStorage.setItem(GRID_LAYOUTS_KEY, JSON.stringify(gridLayouts));
+}
+
 function loadMutes() {
   return loadJson(MUTES_KEY, {});
 }
 
 function saveMutes() {
   localStorage.setItem(MUTES_KEY, JSON.stringify(mutes));
-}
-
-function loadOrder() {
-  const value = loadJson(ORDER_KEY, []);
-  return Array.isArray(value) ? value.filter(id => typeof id === 'string') : [];
-}
-
-function saveOrder() {
-  if (initializing) return;
-  const ids = tiles.map(t => t.id);
-  tileOrder = ids;
-  localStorage.setItem(ORDER_KEY, JSON.stringify(ids));
-}
-
-function applyOrderToStartup(startupTiles, order) {
-  if (!order || !order.length) return startupTiles;
-  const byId = new Map(startupTiles.map(st => [st.module.id, st]));
-  const ordered = [];
-  for (const id of order) {
-    const match = byId.get(id);
-    if (match) { ordered.push(match); byId.delete(id); }
-  }
-  for (const st of byId.values()) ordered.push(st);
-  return ordered;
 }
 
 function loadSavedState(slot) {
@@ -245,6 +340,11 @@ function loadSavedState(slot) {
     saved = loadJson(SAVED_STATE_KEY_BASE, null);
   }
   
+  return saved && Array.isArray(saved.tiles) ? saved : null;
+}
+
+function loadStartupState() {
+  const saved = loadJson(STARTUP_STATE_KEY, null);
   return saved && Array.isArray(saved.tiles) ? saved : null;
 }
 
@@ -263,20 +363,11 @@ function saveLayout() {
 function normalizeLayout(value) {
   const base = defaultLayoutPreset();
   return {
-    columns: clampInt(value.columns, 2, 8, base.columns),
-    rowHeight: clampInt(value.rowHeight, 150, 420, base.rowHeight),
-    gap: clampInt(value.gap, 0, 8, base.gap),
+    columns: clampInt(value.columns, 8, 24, base.columns),
+    rowHeight: clampInt(value.rowHeight, 48, 180, base.rowHeight),
+    gap: clampInt(value.gap, 0, 16, base.gap),
     locked: value.locked !== false,
-    editRefSize: normalizeEditRef(value.editRefSize),
   };
-}
-
-function normalizeEditRef(value) {
-  if (!value || typeof value !== 'object') return null;
-  const w = Number(value.w);
-  const h = Number(value.h);
-  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null;
-  return { w, h };
 }
 
 function defaultLayoutPreset() {
@@ -292,17 +383,20 @@ function clampInt(value, min, max, fallback) {
   return Math.max(min, Math.min(max, n));
 }
 
-function clampSpan(span) {
-  return {
-    cols: clampInt(span && span.cols, 1, layout.columns || 4, 1),
-    rows: clampInt(span && span.rows, 1, 6, 1),
-  };
+function savedGridResolution(value) {
+  const n = Number.parseInt(value, 10);
+  return Number.isFinite(n) && n > 0 ? n : 1;
 }
 
-function clampFloat(value, min, max, fallback) {
-  const n = Number.parseFloat(value);
-  if (!Number.isFinite(n)) return fallback;
-  return Math.max(min, Math.min(max, n));
+function sourceGridResolution(source) {
+  return savedGridResolution(source && (source.gridResolution || source.gridDetail || source.gridScale));
+}
+
+function clampSpan(span) {
+  return {
+    cols: clampInt(span && span.cols, 1, layout.columns || 12, 1),
+    rows: clampInt(span && span.rows, 1, 12, 1),
+  };
 }
 
 function normalizeSpan(value) {
@@ -323,21 +417,6 @@ function spanLabel(span) {
   return `${span.cols}×${span.rows}`;
 }
 
-function rectLabel(rect) {
-  if (!rect) return 'size';
-  return `${Math.round(rect.w)}×${Math.round(rect.h)}`;
-}
-
-function normalizeRect(value, fallback) {
-  const base = fallback || { x: CANVAS_PAD, y: CANVAS_PAD, w: 520, h: 360 };
-  return {
-    x: clampFloat(value && value.x, 0, 100000, base.x),
-    y: clampFloat(value && value.y, 0, 100000, base.y),
-    w: clampFloat(value && value.w, MIN_TILE_W, 6000, base.w),
-    h: clampFloat(value && value.h, MIN_TILE_H, 4000, base.h),
-  };
-}
-
 function gridRect() {
   const grid = document.getElementById('grid');
   if (!grid) return { width: window.innerWidth || 1600, height: window.innerHeight || 900 };
@@ -347,74 +426,126 @@ function gridRect() {
   };
 }
 
-function rectFromSpan(span) {
-  const bounds = gridRect();
-  const cols = layout.columns || 4;
-  const gap = layout.gap || 3;
-  const colW = Math.max(MIN_TILE_W, (bounds.width - gap * (cols + 1)) / cols);
-  const normalized = clampSpan(span || LEGACY_SIZES.S);
-  return {
-    w: Math.max(MIN_TILE_W, colW * normalized.cols + gap * (normalized.cols - 1)),
-    h: Math.max(MIN_TILE_H, layout.rowHeight * normalized.rows + gap * (normalized.rows - 1)),
-  };
+function layoutEngine() {
+  return window.BrainrotLayoutEngine;
 }
 
-function rectsOverlap(a, b) {
-  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
-}
-
-function findOpenRect(span, placed = tiles) {
-  const bounds = gridRect();
-  const cols = layout.columns || 4;
-  const gap = layout.gap || 3;
-  const size = rectFromSpan(span);
-  const stepX = Math.max(160, (bounds.width - CANVAS_PAD * 2) / cols);
-  const stepY = Math.max(120, layout.rowHeight + gap);
-  const existing = placed
-    .map(item => item.rect)
-    .filter(Boolean);
-
-  for (let row = 0; row < 100; row++) {
-    for (let col = 0; col < cols; col++) {
-      const candidate = normalizeRect({
-        x: CANVAS_PAD + col * stepX,
-        y: CANVAS_PAD + row * stepY,
-        w: size.w,
-        h: size.h,
-      });
-      if (candidate.x + candidate.w > bounds.width - CANVAS_PAD && col > 0) continue;
-      if (!existing.some(r => rectsOverlap(candidate, r))) return candidate;
-    }
-  }
-
-  return normalizeRect({
-    x: CANVAS_PAD,
-    y: CANVAS_PAD + existing.reduce((max, r) => Math.max(max, r.y + r.h), 0),
-    w: size.w,
-    h: size.h,
+function layoutConfig() {
+  return layoutEngine().normalizeConfig({
+    columns: layout.columns * GRID_RESOLUTION,
+    rowHeight: Math.max(24, Math.round(layout.rowHeight / GRID_RESOLUTION)),
+    gap: Math.max(0, Math.round(layout.gap / GRID_RESOLUTION)),
+    pad: CANVAS_PAD,
   });
 }
 
-function snapValue(value) {
-  if (!layout.locked) return value;
-  return Math.round(value / SNAP_STEP) * SNAP_STEP;
+function layoutViewportWidth() {
+  return gridRect().width;
 }
 
-function snapRect(rect) {
-  if (!layout.locked) return rect;
-  return normalizeRect({
-    x: snapValue(rect.x),
-    y: snapValue(rect.y),
-    w: snapValue(rect.w),
-    h: snapValue(rect.h),
-  }, rect);
+function gridUnitSize() {
+  const config = layoutConfig();
+  return {
+    col: layoutEngine().cellWidth(config, layoutViewportWidth()) + config.gap,
+    row: config.rowHeight + config.gap,
+  };
+}
+
+function gridItems({ includeTemporary = true } = {}) {
+  return tiles
+    .filter(t => includeTemporary || !t.temporary)
+    .map(t => t.grid ? { ...t.grid, id: t.id } : null)
+    .filter(Boolean);
+}
+
+function gridFromSpan(span) {
+  const normalized = normalizeSpan(span || LEGACY_SIZES.S);
+  return {
+    colSpan: normalized.cols * GRID_RESOLUTION,
+    rowSpan: Math.max(1, normalized.rows * 3 * GRID_RESOLUTION),
+  };
+}
+
+function spanFromGrid(grid) {
+  const item = layoutEngine().normalizeItem(grid || {}, layoutConfig());
+  return clampSpan({
+    cols: Math.max(1, Math.round(item.colSpan / GRID_RESOLUTION)),
+    rows: Math.max(1, Math.round(item.rowSpan / (3 * GRID_RESOLUTION))),
+  });
+}
+
+function normalizeGridItem(value, fallback = null) {
+  const base = fallback || { col: 0, row: 0, colSpan: 2 * GRID_RESOLUTION, rowSpan: 3 * GRID_RESOLUTION };
+  return layoutEngine().normalizeItem({ ...base, ...(value || {}) }, layoutConfig());
+}
+
+function scaleGridToCurrent(grid, fromResolution = GRID_RESOLUTION) {
+  if (!grid || typeof grid !== 'object') return null;
+  const sourceResolution = savedGridResolution(fromResolution);
+  const ratio = GRID_RESOLUTION / sourceResolution;
+  return {
+    id: grid.id == null ? null : String(grid.id),
+    col: Math.round((Number(grid.col) || 0) * ratio),
+    row: Math.round((Number(grid.row) || 0) * ratio),
+    colSpan: Math.max(1, Math.round((Number(grid.colSpan) || 1) * ratio)),
+    rowSpan: Math.max(1, Math.round((Number(grid.rowSpan) || 1) * ratio)),
+  };
+}
+
+function normalizeSavedGridMap(map, fromResolution = GRID_RESOLUTION) {
+  const next = {};
+  if (!map || typeof map !== 'object') return next;
+  for (const [id, grid] of Object.entries(map)) {
+    const scaled = scaleGridToCurrent({ ...grid, id }, fromResolution);
+    if (scaled) next[id] = cleanGridItem(scaled);
+  }
+  return next;
+}
+
+function cleanGridItem(grid) {
+  const item = normalizeGridItem(grid);
+  return {
+    col: item.col,
+    row: item.row,
+    colSpan: item.colSpan,
+    rowSpan: item.rowSpan,
+  };
+}
+
+function gridLabel(grid) {
+  return spanLabel(spanFromGrid(grid));
+}
+
+function rectToGrid(rect, id = null) {
+  const item = layoutEngine().rectToGrid(rect, layoutConfig(), layoutViewportWidth());
+  if (id != null) item.id = id;
+  return item;
+}
+
+function tilesFromStartupPreset() {
+  const preset = rotPreset(STARTUP_PRESET_KEY);
+  if (!preset) return allModules.map(module => ({ module, temporary: false }));
+
+  layout = normalizeLayout(preset.layoutSettings || LAYOUT_PRESETS[preset.layout] || LAYOUT_PRESETS.wide);
+  const grids = normalizeGridMap(preset.grids, preset.modules, preset.gridResolution);
+  const startupTiles = preset.modules
+    .map(id => {
+      const module = moduleById(id);
+      return module ? { module, temporary: false, grid: grids[id] } : null;
+    })
+    .filter(Boolean);
+
+  return startupTiles.length
+    ? startupTiles
+    : allModules.map(module => ({ module, temporary: false }));
 }
 
 function tilesFromSavedState(savedState) {
   if (!savedState) {
-    return allModules.map(module => ({ module, temporary: false }));
+    return tilesFromStartupPreset();
   }
 
+  const resolution = sourceGridResolution(savedState);
   const coreById = new Map(allModules.map(module => [module.id, module]));
   const restored = [];
   for (const savedTile of savedState.tiles) {
@@ -430,10 +561,12 @@ function tilesFromSavedState(savedState) {
     if (savedTile.currentUrl && (module.type === 'webview' || module.type === 'webview-tabs')) {
       module.startUrl = savedTile.currentUrl;
     }
+    const savedGrid = savedTile.grid || (savedState.gridLayouts && savedState.gridLayouts[savedTile.id]);
     restored.push({
       module,
       temporary: !coreModule || !!savedTile.temporary,
       span: savedTile.span,
+      grid: scaleGridToCurrent(savedGrid, resolution),
       rect: savedTile.rect,
       muted: savedTile.muted,
     });
@@ -448,7 +581,6 @@ function wireToolbar() {
   document.getElementById('add-tile-btn').addEventListener('click', toggleAddMenu);
   document.getElementById('layout-btn').addEventListener('click', toggleLayoutMenu);
   document.getElementById('reset-btn').addEventListener('click', resetSizes);
-  document.getElementById('save-layout-btn').addEventListener('click', toggleSaveLayoutMenu);
   document.getElementById('edit-mode-btn').addEventListener('click', () => setEditMode(!editMode));
   document.getElementById('cancel-edit-btn').addEventListener('click', cancelEditMode);
   document.getElementById('module-manager-btn').addEventListener('click', () => openModuleManager());
@@ -480,10 +612,31 @@ function wireToolbar() {
   document.getElementById('command-palette').addEventListener('click', e => {
     if (e.target.id === 'command-palette') closeCommandPalette();
   });
+  document.getElementById('rot-preset-list').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-rot-preset]');
+    if (!btn) return;
+    selectedRotPresetKey = btn.dataset.rotPreset;
+    syncRotPresetEditor();
+    applyRotPreset(selectedRotPresetKey);
+  });
+  document.getElementById('rot-edit-select').addEventListener('change', e => {
+    selectedRotPresetKey = e.target.value;
+    syncRotPresetEditor();
+  });
+  document.getElementById('rot-load-btn').addEventListener('click', () => applyRotPreset(selectedRotPresetKey));
+  document.getElementById('rot-save-current-btn').addEventListener('click', saveCurrentWorkspaceAsRotPreset);
+  document.getElementById('rot-reset-preset-btn').addEventListener('click', resetSelectedRotPreset);
+  document.getElementById('chaos-enabled').addEventListener('change', e => setChaosMode(e.target.checked));
+  document.getElementById('chaos-interval').addEventListener('change', e => {
+    chaosIntervalSeconds = clampInt(e.target.value, 10, 180, chaosIntervalSeconds);
+    localStorage.setItem(CHAOS_INTERVAL_KEY, String(chaosIntervalSeconds));
+    syncChaosControls();
+    if (chaosMode) setChaosMode(true, { silent: true });
+  });
   window.addEventListener('keydown', handleGlobalKeydown);
-  document.getElementById('layout-tabs').addEventListener('click', e => {
-    const btn = e.target.closest('button[data-layout-slot]');
-    if (btn) switchSlot(btn.dataset.layoutSlot);
+  document.getElementById('layout-menu').addEventListener('click', e => {
+    const tab = e.target.closest('button[data-layout-menu-tab]');
+    if (tab) setLayoutMenuTab(tab.dataset.layoutMenuTab);
   });
   document.getElementById('layout-slot-list').addEventListener('click', e => {
     const btn = e.target.closest('button[data-layout-slot]');
@@ -568,6 +721,7 @@ function wireToolbar() {
   });
   saveSlotBtn.addEventListener('click', () => saveLayoutFromMenu());
   saveNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveLayoutFromMenu(); });
+  document.getElementById('startup-default-btn').addEventListener('click', () => saveStartupDefault());
   newSlotBtn.addEventListener('click', () => {
     const nextId = nextLayoutSlotId();
     if (!nextId) {
@@ -591,11 +745,11 @@ function wireToolbar() {
     applyLayout({ persist: true });
   });
   columnsInput.addEventListener('change', () => {
-    layout.columns = clampInt(columnsInput.value, 2, 8, layout.columns);
+    layout.columns = clampInt(columnsInput.value, 8, 24, layout.columns);
     applyLayout({ persist: true, normalizeTiles: true });
   });
   rowHeightInput.addEventListener('change', () => {
-    layout.rowHeight = clampInt(rowHeightInput.value, 150, 420, layout.rowHeight);
+    layout.rowHeight = clampInt(rowHeightInput.value, 48, 180, layout.rowHeight);
     applyLayout({ persist: true });
   });
   document.querySelectorAll('[data-layout-preset]').forEach(btn => {
@@ -609,43 +763,37 @@ function wireToolbar() {
     if (!addMenu.classList.contains('hidden') && !addMenu.contains(e.target) && e.target.id !== 'add-tile-btn') {
       closeAddMenu();
     }
-    const saveMenu = document.getElementById('save-layout-menu');
-    if (!saveMenu.classList.contains('hidden') && !saveMenu.contains(e.target) && e.target.id !== 'save-layout-btn') {
-      closeSaveLayoutMenu();
-    }
     const layoutMenu = document.getElementById('layout-menu');
     if (!layoutMenu.classList.contains('hidden') && !layoutMenu.contains(e.target) && e.target.id !== 'layout-btn') {
       closeLayoutMenu();
     }
   });
 
-  window.addEventListener('resize', () => updateCanvasExtent());
+  window.addEventListener('resize', () => {
+    if (layoutResizeFrame) cancelAnimationFrame(layoutResizeFrame);
+    layoutResizeFrame = requestAnimationFrame(() => {
+      layoutResizeFrame = 0;
+      fullRerender();
+    });
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (appReady) saveStartupDefault({ silent: true });
+  });
 }
 
 function renderLayoutSlots() {
-  const tabRoot = document.getElementById('layout-tabs');
   const listRoot = document.getElementById('layout-slot-list');
-  if (tabRoot) tabRoot.innerHTML = '';
   if (listRoot) listRoot.innerHTML = '';
 
   for (const slot of layoutSlots) {
-    if (tabRoot) {
-      const tab = document.createElement('button');
-      tab.dataset.layoutSlot = slot.id;
-      tab.className = 'layout-tab';
-      tab.textContent = slot.name;
-      tab.title = `Switch to ${slot.name}`;
-      tab.classList.toggle('active', slot.id === currentSlot);
-      tabRoot.appendChild(tab);
-    }
-
     if (listRoot) {
       const item = document.createElement('button');
       item.dataset.layoutSlot = slot.id;
       item.className = 'slot-list-btn';
       item.textContent = slot.name;
       item.title = slot.savedAt ? `Saved ${new Date(slot.savedAt).toLocaleString()}` : 'Empty layout slot';
-      item.classList.toggle('active', slot.id === currentSlot);
+      item.classList.toggle('active', !transientPresetActive && !startupDefaultActive && slot.id === currentSlot);
       listRoot.appendChild(item);
     }
   }
@@ -678,7 +826,7 @@ function saveLayoutFromMenu() {
   const slotId = select.value || currentSlot;
   const name = nameInput.value.trim() || `Layout ${slotId}`;
   saveLayoutToSlot(slotId, name);
-  closeSaveLayoutMenu();
+  closeLayoutMenu();
 }
 
 function saveLayoutToSlot(slotId, name) {
@@ -688,27 +836,35 @@ function saveLayoutToSlot(slotId, name) {
     return;
   }
 
-  currentSlot = slot.id;
-  localStorage.setItem(ACTIVE_SLOT_KEY, currentSlot);
+  const savingActiveSlot = slot.id === currentSlot;
   slot.name = String(name || slot.name).trim() || `Layout ${slot.id}`;
   saveLayoutSlots();
-  saveCurrentState({ silent: true, slot: currentSlot, name: slot.name });
+  saveCurrentState({ silent: true, slot: slot.id, name: slot.name });
   renderLayoutSlots();
-  flashSaveButton(`Saved: ${slot.name}`);
+  flashSaveButton(savingActiveSlot ? `Saved: ${slot.name}` : `Copied to: ${slot.name}`);
+  if (!savingActiveSlot) {
+    showToast(`Copied current layout to ${slot.name}. Active layout stayed ${layoutSlotName(currentSlot)}.`);
+  }
 }
 
 async function switchSlot(slotId) {
   const slot = ensureLayoutSlot(slotId);
   if (!slot) return;
-  if (slotId === currentSlot) return;
+  if (slotId === currentSlot && !transientPresetActive && !startupDefaultActive) return;
 
-  saveCurrentState({ silent: true });
+  if (transientPresetActive || startupDefaultActive) {
+    showToast(transientPresetActive ? 'Preset preview discarded. Use Save to keep a preset.' : 'Startup default discarded.');
+  } else {
+    saveCurrentState({ silent: true });
+  }
   restoreSlot(slot.id);
 }
 
 function restoreSlot(slotId) {
   const slot = ensureLayoutSlot(slotId);
   if (!slot) return;
+  transientPresetActive = false;
+  startupDefaultActive = false;
 
   while (tiles.length > 0) {
     removeTile(tiles[0].id);
@@ -722,7 +878,6 @@ function restoreSlot(slotId) {
   let startupTiles = tilesFromSavedState(savedState);
 
   if (savedState && savedState.layout) layout = normalizeLayout(savedState.layout);
-  else layout = normalizeLayout({});
 
   if (savedState && savedState.sizes) sizes = savedState.sizes;
   else sizes = {};
@@ -730,11 +885,15 @@ function restoreSlot(slotId) {
   if (savedState && savedState.rects) tileRects = savedState.rects;
   else tileRects = {};
 
+  if (savedState && savedState.gridLayouts) gridLayouts = normalizeSavedGridMap(savedState.gridLayouts, sourceGridResolution(savedState));
+  else gridLayouts = {};
+
   if (savedState && savedState.mutes) mutes = savedState.mutes;
   else mutes = {};
 
   saveSizes();
   saveRects();
+  saveGridLayouts();
   saveMutes();
   saveLayout();
   applyLayout();
@@ -743,13 +902,35 @@ function restoreSlot(slotId) {
     addTile(tile.module, {
       temporary: tile.temporary,
       span: tile.span,
+      grid: tile.grid,
       rect: tile.rect,
       muted: tile.muted,
     });
   }
 
   fullRerender();
-  saveOrder();
+}
+
+function reflowTilesToLayout({ persist = false } = {}) {
+  const placed = [];
+  for (const t of tiles) {
+    const current = normalizeGridItem({ ...(t.grid || gridFromSpan(t.span)), id: t.id });
+    const next = layoutEngine().collides(current, placed, t.id, layoutConfig())
+      ? { ...layoutEngine().findOpenSpace(placed, current, layoutConfig()), id: t.id }
+      : current;
+    applyGrid(t, next);
+    placed.push({ ...t.grid, id: t.id });
+    if (persist && !t.temporary) {
+      sizes[t.id] = t.span;
+      tileRects[t.id] = t.rect;
+      gridLayouts[t.id] = cleanGridItem(t.grid);
+    }
+  }
+  if (persist) {
+    saveSizes();
+    saveRects();
+    saveGridLayouts();
+  }
 }
 
 function applyLayout({ persist = false, normalizeTiles = false } = {}) {
@@ -757,13 +938,13 @@ function applyLayout({ persist = false, normalizeTiles = false } = {}) {
   if (!grid) return;
 
   layout = normalizeLayout(layout);
-  grid.style.setProperty('--grid-cols', String(layout.columns));
-  grid.style.setProperty('--grid-row-h', `${layout.rowHeight}px`);
-  grid.style.setProperty('--grid-gap', `${layout.gap}px`);
+  const config = layoutConfig();
+  grid.style.setProperty('--grid-cols', String(config.columns));
+  grid.style.setProperty('--grid-row-h', `${config.rowHeight}px`);
+  grid.style.setProperty('--grid-gap', `${config.gap}px`);
   grid.classList.toggle('raster-unlocked', !layout.locked);
   grid.classList.add('freeform-grid');
 
-  document.getElementById('layout-locked')?.toggleAttribute('checked', layout.locked);
   const lockedInput = document.getElementById('layout-locked');
   const columnsInput = document.getElementById('layout-columns');
   const rowHeightInput = document.getElementById('layout-row-height');
@@ -772,7 +953,9 @@ function applyLayout({ persist = false, normalizeTiles = false } = {}) {
   if (rowHeightInput) rowHeightInput.value = layout.rowHeight;
 
   if (normalizeTiles) {
-    for (const t of tiles) setRect(t.id, snapRect(t.rect), { persist: true });
+    reflowTilesToLayout({ persist });
+  } else {
+    fullRerender();
   }
   updateCanvasExtent();
   if (persist) saveLayout();
@@ -984,6 +1167,16 @@ function buildCommandItems(query = '') {
     },
     {
       group: 'Action',
+      title: chaosMode ? 'Turn chaos mode off' : 'Turn chaos mode on',
+      meta: `${chaosIntervalSeconds}s focus rotation`,
+      keywords: 'brainrot chaos rotate focus',
+      run: () => {
+        closeCommandPalette();
+        setChaosMode(!chaosMode);
+      },
+    },
+    {
+      group: 'Action',
       title: editMode ? 'Exit edit mode' : 'Enter edit mode',
       meta: 'Drag and resize tiles',
       keywords: 'edit canvas move resize',
@@ -1051,11 +1244,26 @@ function buildCommandItems(query = '') {
     items.push({
       group: 'Preset',
       title: `Use ${key} layout`,
-      meta: `${LAYOUT_PRESETS[key].columns} columns`,
+      meta: `${LAYOUT_PRESETS[key].columns * GRID_RESOLUTION} cells`,
       keywords: 'layout preset grid',
       run: () => {
         closeCommandPalette();
         applyLayoutPreset(key);
+      },
+    });
+  }
+
+  for (const key of Object.keys(ROT_PRESETS)) {
+    const preset = rotPreset(key);
+    items.push({
+      group: 'Rot preset',
+      title: preset.label,
+      meta: `${preset.modules.length} tiles${preset.customized ? ' · customized' : ''}`,
+      keywords: `brainrot preset ${key} feeds doomscroll`,
+      run: () => {
+        closeCommandPalette();
+        selectedRotPresetKey = key;
+        applyRotPreset(key);
       },
     });
   }
@@ -1106,7 +1314,6 @@ function buildCommandItems(query = '') {
 function openCommandPalette(query = '') {
   closeAddMenu();
   closeLayoutMenu();
-  closeSaveLayoutMenu();
   const palette = document.getElementById('command-palette');
   const input = document.getElementById('command-query');
   palette.classList.remove('hidden');
@@ -1220,10 +1427,8 @@ function handleGlobalKeydown(e) {
       return;
     }
     const hadMenuOpen = !document.getElementById('add-menu').classList.contains('hidden') ||
-      !document.getElementById('save-layout-menu').classList.contains('hidden') ||
       !document.getElementById('layout-menu').classList.contains('hidden');
     closeAddMenu();
-    closeSaveLayoutMenu();
     closeLayoutMenu();
     if (!hadMenuOpen && editMode) setEditMode(false);
     return;
@@ -1258,7 +1463,6 @@ function openAddMenu() {
   const menu = document.getElementById('add-menu');
   menu.classList.remove('hidden');
   closeLayoutMenu();
-  closeSaveLayoutMenu();
   renderClosedList();
   setTimeout(() => {
     const search = document.getElementById('module-search');
@@ -1273,37 +1477,38 @@ function closeAddMenu() {
   document.getElementById('add-menu').classList.add('hidden');
 }
 
-function toggleLayoutMenu() {
+function setLayoutMenuTab(tab = activeLayoutMenuTab) {
+  activeLayoutMenuTab = ['saved', 'presets', 'grid'].includes(tab) ? tab : 'saved';
+  document.querySelectorAll('[data-layout-menu-tab]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.layoutMenuTab === activeLayoutMenuTab);
+  });
+  document.querySelectorAll('[data-layout-menu-panel]').forEach(panel => {
+    panel.classList.toggle('hidden', panel.dataset.layoutMenuPanel !== activeLayoutMenuTab);
+  });
+  if (activeLayoutMenuTab === 'saved') syncSaveLayoutMenu();
+  if (activeLayoutMenuTab === 'presets') {
+    renderRotPresetControls();
+    syncChaosControls();
+  }
+}
+
+function openLayoutMenu(tab = activeLayoutMenuTab) {
   const menu = document.getElementById('layout-menu');
-  menu.classList.toggle('hidden');
+  menu.classList.remove('hidden');
   closeAddMenu();
-  closeSaveLayoutMenu();
+  setLayoutMenuTab(tab);
   renderLayoutSlots();
   applyLayout();
 }
 
+function toggleLayoutMenu() {
+  const menu = document.getElementById('layout-menu');
+  if (menu.classList.contains('hidden')) openLayoutMenu(activeLayoutMenuTab || 'saved');
+  else closeLayoutMenu();
+}
+
 function closeLayoutMenu() {
   document.getElementById('layout-menu').classList.add('hidden');
-}
-
-function toggleSaveLayoutMenu() {
-  const menu = document.getElementById('save-layout-menu');
-  const wasHidden = menu.classList.contains('hidden');
-  menu.classList.toggle('hidden');
-  closeAddMenu();
-  closeLayoutMenu();
-  if (wasHidden) {
-    syncSaveLayoutMenu();
-    const nameInput = document.getElementById('layout-save-name');
-    setTimeout(() => {
-      nameInput.focus();
-      nameInput.select();
-    }, 0);
-  }
-}
-
-function closeSaveLayoutMenu() {
-  document.getElementById('save-layout-menu').classList.add('hidden');
 }
 
 function renderClosedList() {
@@ -1377,7 +1582,7 @@ function setAllWebTilesMuted(muted) {
   updateWorkspaceStatus();
 }
 
-function setFocusedTile(id) {
+function setFocusedTile(id, { silent = false } = {}) {
   const nextId = id && tiles.some(t => t.id === id) ? id : null;
   focusedTileId = nextId;
   document.body.classList.toggle('is-focused', !!focusedTileId);
@@ -1396,7 +1601,7 @@ function setFocusedTile(id) {
   if (focusedTileId) {
     const focused = tiles.find(t => t.id === focusedTileId);
     bringToFront(focused);
-    showToast(`Focused ${focused.module.name || focused.id}. Press Esc to exit.`);
+    if (!silent) showToast(`Focused ${focused.module.name || focused.id}. Press Esc to exit.`);
   }
   updateWorkspaceStatus();
 }
@@ -1404,21 +1609,345 @@ function setFocusedTile(id) {
 function updateWorkspaceStatus() {
   const layoutEl = document.getElementById('status-layout');
   const tilesEl = document.getElementById('status-tiles');
+  const rotEl = document.getElementById('status-rot');
+  const sessionEl = document.getElementById('status-session');
   const modeEl = document.getElementById('status-mode');
-  if (layoutEl) layoutEl.textContent = `${layoutSlotName(currentSlot)} · ${layout.columns} cols`;
+  const chaosEl = document.getElementById('status-chaos');
+  if (layoutEl) {
+    const label = transientPresetActive
+      ? (rotPreset(selectedRotPresetKey)?.label || 'Default Brainrot')
+      : (startupDefaultActive ? 'Startup default' : layoutSlotName(currentSlot));
+    layoutEl.textContent = `${label} · ${layout.columns * GRID_RESOLUTION} cells`;
+  }
   if (tilesEl) {
     const webCount = tiles.filter(t => t.module.type !== 'terminal').length;
     const termCount = tiles.length - webCount;
     tilesEl.textContent = `${tiles.length} tiles · ${webCount} web · ${termCount} term`;
   }
+  const sessionLabel = formatSessionTime(Date.now() - sessionStartedAt);
+  const rotScore = calculateRotScore();
+  const audioCount = tiles.filter(t => t.module.type !== 'terminal' && !t.muted).length;
+  if (rotEl) rotEl.textContent = `Rot ${rotScore}`;
+  if (sessionEl) sessionEl.textContent = sessionLabel;
+  if (chaosEl) chaosEl.textContent = chaosMode ? `Chaos ${chaosIntervalSeconds}s` : 'Chaos off';
   if (modeEl) {
     const focusName = focusedTileId
       ? tiles.find(t => t.id === focusedTileId)?.module.name || focusedTileId
       : null;
     modeEl.textContent = focusName
       ? `Focus: ${focusName}`
-      : `${editMode ? 'Editing' : 'Live'} · ${layout.locked ? 'snap on' : 'free move'}`;
+      : `${editMode ? 'Editing' : 'Live'} · ${layout.columns * GRID_RESOLUTION}-cell grid`;
   }
+  const statTime = document.getElementById('rot-stat-time');
+  const statScore = document.getElementById('rot-stat-score');
+  const statAudio = document.getElementById('rot-stat-audio');
+  const statTiles = document.getElementById('rot-stat-tiles');
+  if (statTime) statTime.textContent = sessionLabel;
+  if (statScore) statScore.textContent = `Rot ${rotScore}`;
+  if (statAudio) statAudio.textContent = `${audioCount} audio`;
+  if (statTiles) statTiles.textContent = `${tiles.length} tiles`;
+}
+
+function startStatusTimer() {
+  if (statusTimer) return;
+  statusTimer = window.setInterval(updateWorkspaceStatus, 1000);
+}
+
+function formatSessionTime(ms) {
+  const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  const hours = Math.floor(minutes / 60);
+  if (hours > 0) {
+    return `${hours}:${String(minutes % 60).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+function calculateRotScore() {
+  const elapsedMinutes = Math.floor((Date.now() - sessionStartedAt) / 60000);
+  const webTiles = tiles.filter(t => t.module.type !== 'terminal').length;
+  const loudTiles = tiles.filter(t => t.module.type !== 'terminal' && !t.muted).length;
+  const shortformTiles = tiles.filter(t => ['youtube-shorts', 'tiktok', 'instagram'].includes(t.id)).length;
+  const chaosBonus = chaosMode ? 25 : 0;
+  const focusBonus = focusedTileId ? 10 : 0;
+  return elapsedMinutes * 3 + webTiles * 18 + loudTiles * 9 + shortformTiles * 14 + chaosBonus + focusBonus;
+}
+
+function syncChaosControls() {
+  const enabled = document.getElementById('chaos-enabled');
+  const interval = document.getElementById('chaos-interval');
+  if (enabled) enabled.checked = chaosMode;
+  if (interval) interval.value = chaosIntervalSeconds;
+  document.body.classList.toggle('is-chaos', chaosMode);
+}
+
+function setChaosMode(on, { silent = false } = {}) {
+  chaosMode = !!on;
+  localStorage.setItem(CHAOS_MODE_KEY, String(chaosMode));
+  if (chaosTimer) {
+    window.clearInterval(chaosTimer);
+    chaosTimer = null;
+  }
+  if (chaosMode) {
+    chaosTimer = window.setInterval(runChaosTick, chaosIntervalSeconds * 1000);
+  } else if (!silent) {
+    setFocusedTile(null, { silent: true });
+  }
+  syncChaosControls();
+  updateWorkspaceStatus();
+  if (!silent) showToast(chaosMode ? 'Chaos mode on.' : 'Chaos mode off.');
+}
+
+function runChaosTick() {
+  const candidates = tiles.filter(t => t.module.type !== 'terminal');
+  if (!candidates.length) return;
+  const currentIndex = candidates.findIndex(t => t.id === focusedTileId);
+  const next = candidates[(currentIndex + 1 + candidates.length) % candidates.length];
+  setFocusedTile(next.id, { silent: true });
+}
+
+function rotPresetKeys() {
+  return Object.keys(ROT_PRESETS);
+}
+
+function normalizePresetOverride(key, value) {
+  if (!ROT_PRESETS[key] || !value || typeof value !== 'object') return null;
+  const modules = Array.isArray(value.modules)
+    ? value.modules.filter(id => typeof id === 'string' && id.trim()).map(id => id.trim())
+    : null;
+  const grids = value.grids && typeof value.grids === 'object' ? value.grids : null;
+  const layoutSettings = value.layoutSettings ? normalizeLayout(value.layoutSettings) : null;
+  const gridResolution = sourceGridResolution(value);
+  return {
+    label: String(value.label || ROT_PRESETS[key].label).trim() || ROT_PRESETS[key].label,
+    modules: modules && modules.length ? modules : ROT_PRESETS[key].modules,
+    grids,
+    gridResolution,
+    layoutSettings,
+    savedAt: typeof value.savedAt === 'string' ? value.savedAt : null,
+  };
+}
+
+function loadRotPresetOverrides() {
+  const saved = loadJson(ROT_PRESET_OVERRIDES_KEY, {});
+  const overrides = {};
+  for (const key of rotPresetKeys()) {
+    const normalized = normalizePresetOverride(key, saved[key]);
+    if (normalized) overrides[key] = normalized;
+  }
+  return overrides;
+}
+
+function saveRotPresetOverrides() {
+  localStorage.setItem(ROT_PRESET_OVERRIDES_KEY, JSON.stringify(rotPresetOverrides));
+}
+
+function rotPreset(key) {
+  const base = ROT_PRESETS[key];
+  if (!base) return null;
+  const override = rotPresetOverrides[key];
+  return override
+    ? { ...base, ...override, customized: true }
+    : { ...base, customized: false };
+}
+
+function rotPresetManagedIds() {
+  return new Set([
+    ...Object.values(ROT_PRESETS).flatMap(preset => preset.modules),
+    ...Object.values(rotPresetOverrides).flatMap(preset => preset.modules || []),
+  ]);
+}
+
+function renderRotPresetControls() {
+  const list = document.getElementById('rot-preset-list');
+  const select = document.getElementById('rot-edit-select');
+  if (!list || !select) return;
+  list.innerHTML = '';
+  select.innerHTML = '';
+
+  for (const key of rotPresetKeys()) {
+    const preset = rotPreset(key);
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.rotPreset = key;
+    btn.className = 'rot-preset-btn';
+    btn.classList.toggle('customized', !!preset.customized);
+    btn.textContent = preset.customized ? `${preset.label} *` : preset.label;
+    list.appendChild(btn);
+
+    const option = document.createElement('option');
+    option.value = key;
+    option.textContent = preset.customized ? `${preset.label} *` : preset.label;
+    select.appendChild(option);
+  }
+
+  if (!ROT_PRESETS[selectedRotPresetKey]) selectedRotPresetKey = rotPresetKeys()[0];
+  syncRotPresetEditor();
+}
+
+function syncRotPresetEditor() {
+  const select = document.getElementById('rot-edit-select');
+  const labelInput = document.getElementById('rot-edit-label');
+  const preset = rotPreset(selectedRotPresetKey);
+  if (!select || !labelInput || !preset) return;
+  select.value = selectedRotPresetKey;
+  labelInput.value = preset.label;
+}
+
+function normalizeGridMap(source, modules = [], fromResolution = GRID_RESOLUTION) {
+  const map = {};
+  if (!source || typeof source !== 'object') return map;
+  const ids = modules.length ? modules : Object.keys(source);
+  for (const id of ids) {
+    if (!source[id]) continue;
+    map[id] = cleanGridItem(scaleGridToCurrent({ ...source[id], id }, fromResolution));
+  }
+  return map;
+}
+
+function orderTilesForPreset(preset) {
+  const order = new Map(preset.modules.map((id, index) => [id, index]));
+  const originalIndex = new Map(tiles.map((tile, index) => [tile.id, index]));
+  tiles.sort((a, b) => {
+    const ai = order.has(a.id) ? order.get(a.id) : 1000 + (originalIndex.get(a.id) || 0);
+    const bi = order.has(b.id) ? order.get(b.id) : 1000 + (originalIndex.get(b.id) || 0);
+    return ai - bi;
+  });
+  const grid = document.getElementById('grid');
+  if (grid) tiles.forEach(t => grid.appendChild(t.element));
+}
+
+function applyExplicitGrids(gridMap, { persist = false } = {}) {
+  sizes = {};
+  tileRects = {};
+  gridLayouts = {};
+  const assigned = new Set(Object.keys(gridMap));
+  const placed = [];
+  for (const t of tiles) {
+    let grid = assigned.has(t.id)
+      ? normalizeGridItem({ ...gridMap[t.id], id: t.id })
+      : null;
+    if (!grid || layoutEngine().collides(grid, placed, t.id, layoutConfig())) {
+      const span = grid
+        ? { colSpan: grid.colSpan, rowSpan: grid.rowSpan }
+        : gridFromSpan(defaultSpanFor(t.module));
+      grid = layoutEngine().findOpenSpace(placed, span, layoutConfig());
+      grid.id = t.id;
+    }
+    applyGrid(t, grid);
+    if (!t.temporary) {
+      sizes[t.id] = t.span;
+      tileRects[t.id] = t.rect;
+      gridLayouts[t.id] = cleanGridItem(t.grid);
+    }
+    placed.push({ ...t.grid, id: t.id });
+  }
+  fullRerender();
+  if (persist) {
+    saveSizes();
+    saveRects();
+    saveGridLayouts();
+    saveLayout();
+    saveCurrentState({ silent: true });
+  }
+  updateCanvasExtent();
+  updateWorkspaceStatus();
+}
+
+function applyRotPreset(key) {
+  const preset = rotPreset(key);
+  if (!preset) return;
+  selectedRotPresetKey = key;
+  syncRotPresetEditor();
+  closeLayoutMenu();
+  setFocusedTile(null, { silent: true });
+  layout = normalizeLayout(preset.layoutSettings || LAYOUT_PRESETS[preset.layout] || LAYOUT_PRESETS.wide);
+  applyLayout({ persist: false });
+
+  const managedIds = rotPresetManagedIds();
+  for (const t of [...tiles]) {
+    if (managedIds.has(t.id) && !preset.modules.includes(t.id)) {
+      removeTile(t.id);
+    }
+  }
+
+  for (const id of preset.modules) {
+    if (tiles.some(t => t.id === id)) continue;
+    const module = moduleById(id);
+    if (module) addTile(module);
+  }
+
+  orderTilesForPreset(preset);
+  const grids = normalizeGridMap(preset.grids || {}, preset.modules, preset.gridResolution);
+  applyExplicitGrids(grids);
+  transientPresetActive = true;
+  startupDefaultActive = false;
+  showToast(`${preset.label} loaded. Save layout to keep it.`);
+}
+
+function currentLayoutSettingsForPreset() {
+  return normalizeLayout({
+    columns: layout.columns,
+    rowHeight: layout.rowHeight,
+    gap: layout.gap,
+    locked: layout.locked,
+  });
+}
+
+function saveCurrentWorkspaceAsRotPreset() {
+  const key = selectedRotPresetKey;
+  const base = ROT_PRESETS[key];
+  if (!base) return;
+
+  const modules = tiles
+    .map(t => t.id)
+    .filter((id, index, ids) => ids.indexOf(id) === index && !!moduleById(id));
+
+  if (!modules.length) {
+    showToast('Open at least one saved module before saving a preset.', 'error');
+    return;
+  }
+
+  const grids = {};
+  for (const id of modules) {
+    const tile = tiles.find(t => t.id === id);
+    if (tile && tile.grid) grids[id] = cleanGridItem(tile.grid);
+  }
+
+  const label = document.getElementById('rot-edit-label').value.trim() || base.label;
+  rotPresetOverrides[key] = {
+    label,
+    modules,
+    grids,
+    gridResolution: GRID_RESOLUTION,
+    layoutSettings: currentLayoutSettingsForPreset(),
+    savedAt: new Date().toISOString(),
+  };
+  saveRotPresetOverrides();
+  renderRotPresetControls();
+  showToast(`Saved preset: ${label}.`);
+}
+
+async function resetSelectedRotPreset() {
+  const key = selectedRotPresetKey;
+  const preset = rotPreset(key);
+  if (!preset || !preset.customized) {
+    showToast('Preset is already using the default sketch.');
+    return;
+  }
+
+  const ok = await confirmAction({
+    title: 'Reset preset?',
+    message: `${preset.label} will return to the PDF sketch default.`,
+    confirmLabel: 'Reset',
+  });
+  if (!ok) return;
+
+  delete rotPresetOverrides[key];
+  saveRotPresetOverrides();
+  renderRotPresetControls();
+  showToast(`Reset preset: ${ROT_PRESETS[key].label}.`);
 }
 
 function moduleById(id) {
@@ -1465,7 +1994,6 @@ function setModuleFormError(message = '') {
 function openModuleManager(moduleId = null) {
   closeAddMenu();
   closeLayoutMenu();
-  closeSaveLayoutMenu();
   closeCommandPalette();
   document.getElementById('module-manager').classList.remove('hidden');
   renderModuleManagerList();
@@ -1647,6 +2175,7 @@ function replaceOpenTileModule(oldId, nextModule) {
   if (!existing || !nextModule) return;
   const snapshot = {
     span: existing.span,
+    grid: existing.grid,
     rect: existing.rect,
     muted: existing.muted,
   };
@@ -1740,17 +2269,33 @@ function duplicateSelectedModule() {
 function addTile(mod, {
   temporary = false,
   span: requestedSpan = null,
+  grid: requestedGrid = null,
   rect: requestedRect = null,
   muted: requestedMuted = null,
 } = {}) {
   if (tiles.some(t => t.id === mod.id)) return;
   const span = normalizeSpan(requestedSpan || sizes[mod.id] || defaultSpanFor(mod));
-  const rect = normalizeRect(requestedRect || tileRects[mod.id], findOpenRect(span));
+  const existingItems = gridItems();
+  let grid = null;
+  if (requestedGrid) {
+    grid = normalizeGridItem({ ...requestedGrid, id: mod.id });
+  } else if (gridLayouts[mod.id]) {
+    grid = normalizeGridItem({ ...gridLayouts[mod.id], id: mod.id });
+  } else if (requestedRect || tileRects[mod.id]) {
+    grid = layoutEngine().rectToGrid(requestedRect || tileRects[mod.id], layoutConfig(), layoutViewportWidth());
+    grid.id = mod.id;
+  }
+  if (!grid || layoutEngine().collides(grid, existingItems, mod.id, layoutConfig())) {
+    grid = layoutEngine().findOpenSpace(existingItems, gridFromSpan(span), layoutConfig());
+    grid.id = mod.id;
+  }
+  const rect = layoutEngine().gridToRect(grid, layoutConfig(), layoutViewportWidth());
   const muted = requestedMuted == null ? mutes[mod.id] === true : !!requestedMuted;
   const record = {
     id: mod.id,
     module: mod,
-    span,
+    span: spanFromGrid(grid),
+    grid,
     rect,
     muted,
     temporary,
@@ -1761,12 +2306,10 @@ function addTile(mod, {
   };
   const el = buildTileElement(mod, record);
   record.element = el;
-  applySpan(record, span);
-  applyRect(record, rect);
+  applyGrid(record, grid);
   document.getElementById('grid').appendChild(el);
   tiles.push(record);
   updateCanvasExtent();
-  saveOrder();
   updateWorkspaceStatus();
 }
 
@@ -1782,7 +2325,6 @@ function removeTile(id) {
   tiles.splice(i, 1);
   if (focusedTileId === id) setFocusedTile(null);
   updateCanvasExtent();
-  saveOrder();
   updateWorkspaceStatus();
 }
 
@@ -1794,67 +2336,52 @@ function applySpan(record, span) {
 function setSpan(id, span, { persist = true } = {}) {
   const t = tiles.find(x => x.id === id);
   if (!t) return;
-  applySpan(t, span);
-  const size = rectFromSpan(t.span);
-  setRect(id, { ...t.rect, w: size.w, h: size.h }, { persist });
+  const nextSpan = normalizeSpan(span);
+  const nextGrid = {
+    ...(t.grid || { col: 0, row: 0 }),
+    ...gridFromSpan(nextSpan),
+    id,
+  };
+  if (!setGrid(id, nextGrid, { persist })) {
+    const open = layoutEngine().findOpenSpace(
+      gridItems().filter(item => item.id !== id),
+      gridFromSpan(nextSpan),
+      layoutConfig()
+    );
+    setGrid(id, { ...open, id }, { persist });
+  }
   if (persist && !t.temporary) {
     sizes[id] = t.span;
     saveSizes();
   }
 }
 
-function applyRect(record, rect) {
-  record.rect = normalizeRect(rect, record.rect);
+function applyGrid(record, grid) {
+  const item = normalizeGridItem({ ...(grid || {}), id: record.id }, record.grid || gridFromSpan(record.span));
+  record.grid = { ...item, id: record.id };
+  record.rect = layoutEngine().gridToRect(record.grid, layoutConfig(), layoutViewportWidth());
+  record.span = spanFromGrid(record.grid);
+
   const el = record.element;
-  if (editMode) {
+  if (el) {
     el.style.left = `${record.rect.x}px`;
     el.style.top = `${record.rect.y}px`;
     el.style.width = `${record.rect.w}px`;
     el.style.height = `${record.rect.h}px`;
-  } else {
-    const ref = currentEditRef();
-    el.style.left = `${(record.rect.x / ref.w) * 100}%`;
-    el.style.top = `${(record.rect.y / ref.h) * 100}%`;
-    el.style.width = `${(record.rect.w / ref.w) * 100}%`;
-    el.style.height = `${(record.rect.h / ref.h) * 100}%`;
   }
+
   if (record.sizeBtn) {
-    record.sizeBtn.textContent = rectLabel(record.rect);
-    record.sizeBtn.title = 'Click for preset size; drag edges/corners for exact resize';
+    record.sizeBtn.textContent = gridLabel(record.grid);
+    record.sizeBtn.title = 'Cycle preset size; drag edges or corners in Edit mode for cell resize';
   }
-}
-
-function currentEditRef() {
-  if (layout.editRefSize) return layout.editRefSize;
-  return snapshotRef();
-}
-
-function snapshotRef() {
-  const bounds = gridRect();
-  let maxR = bounds.width;
-  let maxB = bounds.height;
-  for (const t of tiles) {
-    if (!t.rect) continue;
-    maxR = Math.max(maxR, t.rect.x + t.rect.w + CANVAS_PAD);
-    maxB = Math.max(maxB, t.rect.y + t.rect.h + CANVAS_PAD);
-  }
-  return { w: Math.ceil(maxR), h: Math.ceil(maxB) };
-}
-
-function clearCanvasExtent() {
-  const grid = document.getElementById('grid');
-  if (!grid) return;
-  grid.style.removeProperty('--canvas-w');
-  grid.style.removeProperty('--canvas-h');
 }
 
 function fullRerender() {
-  for (const t of tiles) applyRect(t, t.rect);
-  if (editMode) {
-    updateCanvasExtent();
-  } else {
-    clearCanvasExtent();
+  for (const t of tiles) {
+    const grid = t.grid || (t.rect ? rectToGrid(t.rect, t.id) : { ...gridFromSpan(t.span), id: t.id });
+    applyGrid(t, grid);
   }
+  updateCanvasExtent();
 }
 
 function updateEditButton() {
@@ -1863,8 +2390,8 @@ function updateEditButton() {
   btn.classList.toggle('active', editMode);
   btn.textContent = editMode ? '● Editing' : '✎ Edit';
   btn.title = editMode
-    ? 'Exit edit mode (saves layout, tiles resize with window)'
-    : 'Enter edit mode (drag/resize tiles on a freeform canvas)';
+    ? 'Exit edit mode (saves grid layout, tiles resize with window)'
+    : 'Enter edit mode (drag/resize tiles on the grid)';
 
   const cancelBtn = document.getElementById('cancel-edit-btn');
   if (cancelBtn) cancelBtn.hidden = !editMode;
@@ -1875,34 +2402,6 @@ function setEditMode(on) {
   editMode = !!on;
   document.body.classList.toggle('is-editing', editMode);
   saveEditMode();
-
-  if (!editMode && was) {
-    if (tiles.length > 0) {
-      let minX = Infinity, minY = Infinity;
-      let maxX = -Infinity, maxY = -Infinity;
-
-      tiles.forEach(t => {
-        minX = Math.min(minX, t.rect.x);
-        minY = Math.min(minY, t.rect.y);
-      });
-
-      // Shift to origin
-      tiles.forEach(t => {
-        t.rect.x -= minX;
-        t.rect.y -= minY;
-      });
-
-      // Recalculate max
-      tiles.forEach(t => {
-        maxX = Math.max(maxX, t.rect.x + t.rect.w);
-        maxY = Math.max(maxY, t.rect.y + t.rect.h);
-      });
-
-      layout.editRefSize = { w: maxX, h: maxY };
-      saveLayout();
-      saveRects();
-    }
-  }
 
   fullRerender();
   updateEditButton();
@@ -1918,40 +2417,164 @@ function cancelEditMode() {
   saveEditMode();
   closeAddMenu();
   closeLayoutMenu();
-  closeSaveLayoutMenu();
   restoreSlot(currentSlot);
   updateEditButton();
   flashSaveButton('Edit canceled');
 }
 
-function setRect(id, rect, { persist = true } = {}) {
-  const t = tiles.find(x => x.id === id);
-  if (!t) return;
-  applyRect(t, snapRect(normalizeRect(rect, t.rect)));
-  updateCanvasExtent();
-  if (persist && !t.temporary) {
-    tileRects[id] = t.rect;
-    saveRects();
+function sameGrid(a, b) {
+  return !!a && !!b &&
+    a.col === b.col &&
+    a.row === b.row &&
+    a.colSpan === b.colSpan &&
+    a.rowSpan === b.rowSpan;
+}
+
+function currentTileGridMap() {
+  const map = new Map();
+  for (const t of tiles) {
+    map.set(t.id, normalizeGridItem({ ...(t.grid || gridFromSpan(t.span)), id: t.id }));
   }
+  return map;
+}
+
+function addPushOption(options, item, blocker, col, row, priority) {
+  const next = normalizeGridItem({ ...item, col, row, id: item.id }, item);
+  if (!layoutEngine().overlaps(next, blocker)) {
+    options.push({ item: next, priority });
+  }
+}
+
+function pushItemAway(item, blocker, direction, map) {
+  const options = [];
+  let priority = 0;
+
+  if (direction.includes('e')) addPushOption(options, item, blocker, blocker.col + blocker.colSpan, item.row, priority++);
+  if (direction.includes('w')) addPushOption(options, item, blocker, blocker.col - item.colSpan, item.row, priority++);
+  if (direction.includes('s')) addPushOption(options, item, blocker, item.col, blocker.row + blocker.rowSpan, priority++);
+  if (direction.includes('n')) addPushOption(options, item, blocker, item.col, blocker.row - item.rowSpan, priority++);
+
+  addPushOption(options, item, blocker, item.col, blocker.row + blocker.rowSpan, priority++);
+  addPushOption(options, item, blocker, blocker.col + blocker.colSpan, item.row, priority++);
+  addPushOption(options, item, blocker, Math.max(0, blocker.col - item.colSpan), item.row, priority++);
+  addPushOption(options, item, blocker, item.col, Math.max(0, blocker.row - item.rowSpan), priority++);
+
+  if (options.length) {
+    options.sort((a, b) => {
+      const costA = a.priority * 1000 + Math.abs(a.item.col - item.col) + Math.abs(a.item.row - item.row);
+      const costB = b.priority * 1000 + Math.abs(b.item.col - item.col) + Math.abs(b.item.row - item.row);
+      return costA - costB;
+    });
+    return options[0].item;
+  }
+
+  const occupied = Array.from(map.values()).filter(other => other.id !== item.id);
+  const open = layoutEngine().findOpenSpace(occupied, item, layoutConfig());
+  open.id = item.id;
+  return open;
+}
+
+function resolvePushedGridMap(activeId, candidateGrid, direction, baseMap = currentTileGridMap()) {
+  const map = new Map();
+  for (const [id, item] of baseMap.entries()) {
+    map.set(id, normalizeGridItem({ ...item, id }));
+  }
+
+  const active = normalizeGridItem({ ...(candidateGrid || {}), id: activeId }, map.get(activeId));
+  map.set(activeId, active);
+
+  const changed = new Set([activeId]);
+  const queue = [active];
+  let guard = 0;
+  const maxGuard = Math.max(80, tiles.length * tiles.length * 8);
+
+  while (queue.length && guard < maxGuard) {
+    guard++;
+    const blocker = queue.shift();
+    for (const [id, item] of map.entries()) {
+      if (id === blocker.id) continue;
+      if (!layoutEngine().overlaps(blocker, item)) continue;
+      const next = pushItemAway(item, blocker, direction, map);
+      if (!next || sameGrid(next, item)) return null;
+      map.set(id, next);
+      changed.add(id);
+      queue.push(next);
+    }
+  }
+
+  if (guard >= maxGuard) return null;
+
+  const items = Array.from(map.values());
+  for (let i = 0; i < items.length; i++) {
+    for (let j = i + 1; j < items.length; j++) {
+      if (layoutEngine().overlaps(items[i], items[j])) return null;
+    }
+  }
+
+  return { map, changed };
+}
+
+function persistTileGeometryBatch(records) {
+  for (const record of records) {
+    if (!record || record.temporary) continue;
+    sizes[record.id] = record.span;
+    tileRects[record.id] = record.rect;
+    gridLayouts[record.id] = cleanGridItem(record.grid);
+  }
+  saveSizes();
+  saveRects();
+  saveGridLayouts();
+}
+
+function applyTileGridMap(map, changed = null, { persist = false } = {}) {
+  const changedRecords = [];
+  for (const t of tiles) {
+    const grid = map.get(t.id);
+    if (!grid) continue;
+    const didChange = !sameGrid(t.grid, grid);
+    applyGrid(t, grid);
+    if (didChange || !changed || changed.has(t.id)) changedRecords.push(t);
+  }
+  updateCanvasExtent();
+  if (persist) persistTileGeometryBatch(changedRecords);
+}
+
+function persistTileGeometry(record) {
+  if (!record || record.temporary) return;
+  persistTileGeometryBatch([record]);
+}
+
+function setGrid(id, grid, { persist = true, allowCollision = false, push = false, direction = 's', baseMap = null } = {}) {
+  const t = tiles.find(x => x.id === id);
+  if (!t) return false;
+  const nextGrid = normalizeGridItem({ ...(grid || {}), id }, t.grid || gridFromSpan(t.span));
+  if (push) {
+    const pushed = resolvePushedGridMap(id, nextGrid, direction, baseMap || currentTileGridMap());
+    if (!pushed) return false;
+    applyTileGridMap(pushed.map, pushed.changed, { persist });
+    return true;
+  }
+  if (!allowCollision && layoutEngine().collides(nextGrid, gridItems(), id, layoutConfig())) {
+    return false;
+  }
+  applyGrid(t, nextGrid);
+  updateCanvasExtent();
+  if (persist) persistTileGeometry(t);
+  return true;
 }
 
 function updateCanvasExtent() {
   const grid = document.getElementById('grid');
   if (!grid) return;
-  if (!editMode) {
-    clearCanvasExtent();
-    return;
-  }
-  const bounds = gridRect();
-  let maxRight = bounds.width;
-  let maxBottom = bounds.height;
-  for (const t of tiles) {
-    if (!t.rect) continue;
-    maxRight = Math.max(maxRight, t.rect.x + t.rect.w + CANVAS_PAD);
-    maxBottom = Math.max(maxBottom, t.rect.y + t.rect.h + CANVAS_PAD);
-  }
-  grid.style.setProperty('--canvas-w', `${Math.ceil(maxRight)}px`);
-  grid.style.setProperty('--canvas-h', `${Math.ceil(maxBottom)}px`);
+  const config = layoutConfig();
+  const cellW = layoutEngine().cellWidth(config, layoutViewportWidth());
+  const size = layoutEngine().canvasSize(gridItems(), config, layoutViewportWidth());
+  grid.style.setProperty('--grid-pad', `${config.pad}px`);
+  grid.style.setProperty('--grid-cell-w', `${cellW}px`);
+  grid.style.setProperty('--grid-step-x', `${cellW + config.gap}px`);
+  grid.style.setProperty('--grid-step-y', `${config.rowHeight + config.gap}px`);
+  grid.style.setProperty('--canvas-w', `${Math.ceil(size.w)}px`);
+  grid.style.setProperty('--canvas-h', `${Math.ceil(size.h)}px`);
 }
 
 function setTileMuted(record, muted, { persist = true } = {}) {
@@ -1971,14 +2594,6 @@ function setTileMuted(record, muted, { persist = true } = {}) {
   }
 }
 
-function gridMetrics() {
-  const grid = document.getElementById('grid');
-  const rect = grid.getBoundingClientRect();
-  const gap = layout.gap;
-  const colWidth = (rect.width - gap * (layout.columns - 1)) / layout.columns;
-  return { grid, colWidth, rowHeight: layout.rowHeight, gap };
-}
-
 function startTileDrag(event, record) {
   if (!editMode) return;
   if (!record.element) return;
@@ -1988,16 +2603,17 @@ function startTileDrag(event, record) {
 
   const startX = event.clientX;
   const startY = event.clientY;
-  const startRect = { ...record.rect };
+  const startGrid = normalizeGridItem({ ...(record.grid || {}), id: record.id });
+  const unit = gridUnitSize();
   let dragging = false;
   let frame = 0;
-  let nextRect = startRect;
+  let nextGrid = startGrid;
 
   bringToFront(record);
 
   const applyNext = () => {
     frame = 0;
-    setRect(record.id, nextRect, { persist: false });
+    setGrid(record.id, nextGrid, { persist: false });
   };
 
   const onMove = e => {
@@ -2007,10 +2623,11 @@ function startTileDrag(event, record) {
       document.body.classList.add('is-dragging');
       record.element.classList.add('dragging');
     }
-    nextRect = snapRect({
-      ...startRect,
-      x: Math.max(0, startRect.x + e.clientX - startX),
-      y: Math.max(0, startRect.y + e.clientY - startY),
+    nextGrid = normalizeGridItem({
+      ...startGrid,
+      col: startGrid.col + Math.round((e.clientX - startX) / unit.col),
+      row: startGrid.row + Math.round((e.clientY - startY) / unit.row),
+      id: record.id,
     });
     if (!frame) frame = requestAnimationFrame(applyNext);
   };
@@ -2022,7 +2639,7 @@ function startTileDrag(event, record) {
     if (frame) cancelAnimationFrame(frame);
     document.body.classList.remove('is-dragging');
     record.element.classList.remove('dragging');
-    if (dragging) setRect(record.id, nextRect, { persist: true });
+    if (dragging) setGrid(record.id, nextGrid, { persist: true });
   };
 
   window.addEventListener('pointermove', onMove);
@@ -2037,43 +2654,22 @@ function bringToFront(record) {
   tiles.push(record);
   const grid = document.getElementById('grid');
   if (grid) grid.appendChild(record.element);
-  saveOrder();
 }
 
 function startTileResize(event, record, direction = 'se') {
+  if (!editMode) return;
   if (!record.element) return;
   event.preventDefault();
   event.stopPropagation();
 
   const startX = event.clientX;
   const startY = event.clientY;
-  const startRect = { ...record.rect };
-  const bounds = gridRect();
-  const ref = currentEditRef();
-  const scaleX = ref.w / bounds.width;
-  const scaleY = ref.h / bounds.height;
+  const startMap = currentTileGridMap();
+  const startGrid = normalizeGridItem({ ...(record.grid || {}), id: record.id });
+  const unit = gridUnitSize();
   let frame = 0;
-  let nextRect = startRect;
-
-  // Find adjacent tiles for tiling mode (non-edit)
-  const adjacents = [];
-  if (!editMode) {
-    const TOLERANCE = 10; // internal pixels
-    tiles.forEach(t => {
-      if (t.id === record.id) return;
-      const r = t.rect;
-      
-      if (direction === 'e' && Math.abs(r.x - (startRect.x + startRect.w)) < TOLERANCE) {
-        adjacents.push({ tile: t, type: 'left-edge', startRect: { ...r } });
-      } else if (direction === 'w' && Math.abs((r.x + r.w) - startRect.x) < TOLERANCE) {
-        adjacents.push({ tile: t, type: 'right-edge', startRect: { ...r } });
-      } else if (direction === 's' && Math.abs(r.y - (startRect.y + startRect.h)) < TOLERANCE) {
-        adjacents.push({ tile: t, type: 'top-edge', startRect: { ...r } });
-      } else if (direction === 'n' && Math.abs((r.y + r.h) - startRect.y) < TOLERANCE) {
-        adjacents.push({ tile: t, type: 'bottom-edge', startRect: { ...r } });
-      }
-    });
-  }
+  let nextGrid = startGrid;
+  let lastAppliedGrid = startGrid;
 
   bringToFront(record);
   document.body.classList.add('is-resizing');
@@ -2081,85 +2677,21 @@ function startTileResize(event, record, direction = 'se') {
 
   const applyNext = () => {
     frame = 0;
-    setRect(record.id, nextRect, { persist: false });
-
-    // Adjust adjacents in tiling mode
-    if (!editMode) {
-      adjacents.forEach(adj => {
-        const nr = { ...adj.startRect };
-        if (adj.type === 'left-edge') {
-          const dx = nextRect.x + nextRect.w - (startRect.x + startRect.w);
-          nr.x = adj.startRect.x + dx;
-          nr.w = Math.max(MIN_TILE_W, adj.startRect.w - dx);
-        } else if (adj.type === 'right-edge') {
-          const dx = nextRect.x - startRect.x;
-          nr.w = Math.max(MIN_TILE_W, adj.startRect.w + dx);
-        } else if (adj.type === 'top-edge') {
-          const dy = nextRect.y + nextRect.h - (startRect.y + startRect.h);
-          nr.y = adj.startRect.y + dy;
-          nr.h = Math.max(MIN_TILE_H, adj.startRect.h - dy);
-        } else if (adj.type === 'bottom-edge') {
-          const dy = nextRect.y - startRect.y;
-          nr.h = Math.max(MIN_TILE_H, adj.startRect.h + dy);
-        }
-        setRect(adj.tile.id, nr, { persist: false });
-      });
+    if (setGrid(record.id, nextGrid, {
+      persist: false,
+      push: true,
+      direction,
+      baseMap: startMap,
+    })) {
+      lastAppliedGrid = nextGrid;
     }
   };
 
   const move = e => {
-    let dx = (e.clientX - startX) * scaleX;
-    let dy = (e.clientY - startY) * scaleY;
-
-    // Pre-clamp dx/dy to prevent overlapping or over-shrinking of any involved tile
-    if (!editMode) {
-      if (direction.includes('e')) {
-        const maxGrowth = Math.min(...[Infinity, ...adjacents.filter(a => a.type === 'left-edge').map(a => a.startRect.w - MIN_TILE_W)]);
-        dx = Math.max(MIN_TILE_W - startRect.w, Math.min(dx, maxGrowth));
-      }
-      if (direction.includes('w')) {
-        const maxShrink = startRect.w - MIN_TILE_W;
-        const maxGrowth = Math.min(...[Infinity, ...adjacents.filter(a => a.type === 'right-edge').map(a => a.startRect.w - MIN_TILE_W)]);
-        dx = Math.max(-maxGrowth, Math.min(dx, maxShrink));
-      }
-      if (direction.includes('s')) {
-        const maxGrowthH = Math.min(...[Infinity, ...adjacents.filter(a => a.type === 'top-edge').map(a => a.startRect.h - MIN_TILE_H)]);
-        dy = Math.max(MIN_TILE_H - startRect.h, Math.min(dy, maxGrowthH));
-      }
-      if (direction.includes('n')) {
-        const maxShrinkH = startRect.h - MIN_TILE_H;
-        const maxGrowthH = Math.min(...[Infinity, ...adjacents.filter(a => a.type === 'bottom-edge').map(a => a.startRect.h - MIN_TILE_H)]);
-        dy = Math.max(-maxGrowthH, Math.min(dy, maxShrinkH));
-      }
-    }
-
-    let x = startRect.x;
-    let y = startRect.y;
-    let w = startRect.w;
-    let h = startRect.h;
-
-    if (direction.includes('e')) w = startRect.w + dx;
-    if (direction.includes('s')) h = startRect.h + dy;
-    if (direction.includes('w')) {
-      x = startRect.x + dx;
-      w = startRect.w - dx;
-    }
-    if (direction.includes('n')) {
-      y = startRect.y + dy;
-      h = startRect.h - dy;
-    }
-
-    // Secondary safety clamp
-    if (w < MIN_TILE_W) {
-      if (direction.includes('w')) x -= MIN_TILE_W - w;
-      w = MIN_TILE_W;
-    }
-    if (h < MIN_TILE_H) {
-      if (direction.includes('n')) y -= MIN_TILE_H - h;
-      h = MIN_TILE_H;
-    }
-
-    nextRect = snapRect(normalizeRect({ x: Math.max(0, x), y: Math.max(0, y), w, h }, startRect));
+    const deltaCols = Math.round((e.clientX - startX) / unit.col);
+    const deltaRows = Math.round((e.clientY - startY) / unit.row);
+    nextGrid = layoutEngine().resizeItem(startGrid, direction, deltaCols, deltaRows, layoutConfig());
+    nextGrid.id = record.id;
     if (!frame) frame = requestAnimationFrame(applyNext);
   };
 
@@ -2170,14 +2702,18 @@ function startTileResize(event, record, direction = 'se') {
     if (frame) cancelAnimationFrame(frame);
     document.body.classList.remove('is-resizing');
     record.element.classList.remove('resizing');
-    setRect(record.id, nextRect, { persist: true });
-
-    if (!editMode) {
-      adjacents.forEach(adj => {
-        const t = tiles.find(x => x.id === adj.tile.id);
-        if (t) setRect(t.id, t.rect, { persist: true });
+    if (!setGrid(record.id, nextGrid, {
+      persist: true,
+      push: true,
+      direction,
+      baseMap: startMap,
+    }) && !sameGrid(lastAppliedGrid, nextGrid)) {
+      setGrid(record.id, lastAppliedGrid, {
+        persist: true,
+        push: true,
+        direction,
+        baseMap: startMap,
       });
-      saveCurrentState();
     }
   };
 
@@ -2197,26 +2733,29 @@ function cycleSize(id) {
 function resetSizes() {
   sizes = {};
   tileRects = {};
-  layout.editRefSize = null;
+  gridLayouts = {};
   saveSizes();
   saveRects();
+  saveGridLayouts();
   saveLayout();
 
   const placed = [];
   for (const t of tiles) {
     const span = defaultSpanFor(t.module);
-    applySpan(t, span);
-    const rect = findOpenRect(span, placed);
-    applyRect(t, rect);
+    const grid = layoutEngine().findOpenSpace(placed, gridFromSpan(span), layoutConfig());
+    grid.id = t.id;
+    applyGrid(t, grid);
     if (!t.temporary) {
       sizes[t.id] = t.span;
       tileRects[t.id] = t.rect;
+      gridLayouts[t.id] = cleanGridItem(t.grid);
     }
-    placed.push(t);
+    placed.push({ ...t.grid, id: t.id });
   }
   fullRerender();
   saveSizes();
   saveRects();
+  saveGridLayouts();
   saveCurrentState({ silent: true });
   flashSaveButton('Reset saved');
   updateCanvasExtent();
@@ -2240,42 +2779,72 @@ function moduleForSnapshot(record) {
   return module;
 }
 
-function saveCurrentState({ silent = false, slot = currentSlot, name = null } = {}) {
+function createWorkspaceSnapshot() {
   const nextSizes = {};
   const nextRects = {};
+  const nextGrids = {};
   const nextMutes = { ...mutes };
   for (const t of tiles) {
     if (!t.temporary) nextSizes[t.id] = t.span;
     if (!t.temporary) nextRects[t.id] = t.rect;
+    if (!t.temporary) nextGrids[t.id] = cleanGridItem(t.grid);
     nextMutes[t.id] = !!t.muted;
   }
 
-  sizes = nextSizes;
-  tileRects = nextRects;
-  mutes = nextMutes;
+  return {
+    snapshot: {
+      version: 2,
+      gridResolution: GRID_RESOLUTION,
+      savedAt: new Date().toISOString(),
+      layout: normalizeLayout(layout),
+      sizes: nextSizes,
+      rects: nextRects,
+      gridLayouts: nextGrids,
+      mutes: nextMutes,
+      tiles: tiles.map(t => ({
+        id: t.id,
+        temporary: !!t.temporary,
+        span: t.span,
+        rect: t.rect,
+        grid: cleanGridItem(t.grid),
+        muted: !!t.muted,
+        currentUrl: tileCurrentUrl(t),
+        module: moduleForSnapshot(t),
+      })),
+    },
+    sizes: nextSizes,
+    rects: nextRects,
+    gridLayouts: nextGrids,
+    mutes: nextMutes,
+  };
+}
+
+function saveStartupDefault({ silent = false } = {}) {
+  const { snapshot } = createWorkspaceSnapshot();
+  localStorage.setItem(STARTUP_STATE_KEY, JSON.stringify(snapshot));
+  if (silent) return;
+  flashSaveButton('Default saved');
+  showToast('Current layout will open on startup.');
+}
+
+function saveCurrentState({ silent = false, slot = currentSlot, name = null } = {}) {
+  const slotId = String(slot || currentSlot);
+  if (slotId === currentSlot) {
+    transientPresetActive = false;
+    startupDefaultActive = false;
+  }
+  const next = createWorkspaceSnapshot();
+  const { snapshot } = next;
+
+  sizes = next.sizes;
+  tileRects = next.rects;
+  gridLayouts = next.gridLayouts;
+  mutes = next.mutes;
   saveSizes();
   saveRects();
+  saveGridLayouts();
   saveMutes();
   saveLayout();
-
-  const snapshot = {
-    version: 1,
-    savedAt: new Date().toISOString(),
-    layout,
-    sizes,
-    rects: tileRects,
-    mutes,
-    tiles: tiles.map(t => ({
-      id: t.id,
-      temporary: !!t.temporary,
-      span: t.span,
-      rect: t.rect,
-      muted: !!t.muted,
-      currentUrl: tileCurrentUrl(t),
-      module: moduleForSnapshot(t),
-    })),
-  };
-  const slotId = String(slot || currentSlot);
   localStorage.setItem(`${SAVED_STATE_KEY_BASE}:${slotId}`, JSON.stringify(snapshot));
 
   const meta = ensureLayoutSlot(slotId, name);
@@ -2292,7 +2861,7 @@ function saveCurrentState({ silent = false, slot = currentSlot, name = null } = 
 }
 
 function flashSaveButton(label = 'Saved') {
-  const btn = document.getElementById('save-layout-btn');
+  const btn = document.getElementById('layout-btn');
   if (!btn) return;
   const original = btn.textContent;
   btn.textContent = label;
@@ -2359,8 +2928,8 @@ function buildTileElement(mod, record) {
 
   const sizeBtn = document.createElement('button');
   sizeBtn.className = 'size-btn';
-  sizeBtn.textContent = rectLabel(record.rect);
-  sizeBtn.title = 'Click for preset size; drag edges/corners for exact resize';
+  sizeBtn.textContent = gridLabel(record.grid);
+  sizeBtn.title = 'Cycle preset size; drag edges or corners in Edit mode for cell resize';
   sizeBtn.addEventListener('click', () => cycleSize(mod.id));
   actions.appendChild(sizeBtn);
   record.sizeBtn = sizeBtn;

@@ -1,0 +1,7 @@
+{
+  "name": "BBC News",
+  "type": "webview",
+  "url": "https://www.bbc.com/news",
+  "category": "News",
+  "order": 61
+}

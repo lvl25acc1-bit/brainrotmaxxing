@@ -1,0 +1,7 @@
+{
+  "name": "Yahoo Finance",
+  "type": "webview",
+  "url": "https://finance.yahoo.com/",
+  "category": "Finance",
+  "order": 100
+}

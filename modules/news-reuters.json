@@ -1,0 +1,7 @@
+{
+  "name": "Reuters",
+  "type": "webview",
+  "url": "https://www.reuters.com/",
+  "category": "News",
+  "order": 62
+}
