@@ -329,7 +329,13 @@ function resolveExecutable(command, env, cwd) {
 }
 
 function safeWorkingDirectory(cwd) {
-  for (const candidate of [cwd, process.cwd(), os.homedir()]) {
+  const candidates = [cwd, process.cwd(), os.homedir()]
+    .map(candidate => {
+      if (!candidate) return candidate;
+      const expanded = expandHome(candidate);
+      return path.isAbsolute(expanded) ? expanded : path.resolve(process.cwd(), expanded);
+    });
+  for (const candidate of candidates) {
     try {
       if (candidate && fs.statSync(candidate).isDirectory()) return candidate;
     } catch {}
