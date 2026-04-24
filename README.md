@@ -1,15 +1,10 @@
 # BrainrotMaxxing
 
-BrainrotMaxxing is a modular Electron workspace for running web feeds and terminal sessions side by side. It supports saved layout slots, freeform tile positioning, webview controls, terminal tiles, focus mode, and an in-app module manager.
+FRY YOUR BRAIN CONSUME THE SLOP.
 
 ## Features
 
-- Modular web, tabbed-web, and terminal tiles
-- Saved layout slots with resize, drag, focus, and snap controls
-- Command palette with `Cmd+K`
-- In-app module manager for creating, editing, duplicating, and deleting modules
-- Chrome cookie import helper for local Google/YouTube login reuse
-- Packaged macOS app build via Electron Packager
+Tiles and Layouts with Electron.
 
 ## Requirements
 
