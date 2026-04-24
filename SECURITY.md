@@ -37,16 +37,5 @@ The Chrome cookie import feature is local-only:
 - Imported cookies are copied into this app's Electron session storage.
 - The app does not intentionally upload cookies, tokens, terminal output, or layout data.
 
-Do not commit personal app data, cookie databases, exported browser profiles, `.env` files, API keys, signing certificates, or generated builds.
 
-## Maintainer Checklist
 
-Before making the repository public or accepting outside contributions:
-
-- Enable GitHub two-factor authentication.
-- Enable Dependabot alerts and security updates.
-- Enable GitHub secret scanning and push protection if available.
-- Add branch protection for `main`.
-- Review pull requests before running contributor code locally.
-- Keep `package-lock.json` committed and use `npm ci` in CI.
-- Review `git log --format='%H %an <%ae>' --all` for public commit identity exposure.
