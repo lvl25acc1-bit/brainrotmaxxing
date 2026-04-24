@@ -23,7 +23,7 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "@electron/packager": "^19.1.0",
+    "@electron/packager": "^20.0.0",
     "@electron/rebuild": "^4.0.4",
     "electron": "^41.2.2"
   },
