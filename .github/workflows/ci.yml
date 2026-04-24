@@ -27,3 +27,6 @@ jobs:
 
       - name: Check
         run: npm run check
+
+      - name: Security scan
+        run: npm run security:scan

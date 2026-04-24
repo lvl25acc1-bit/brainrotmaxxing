@@ -24,9 +24,10 @@ npm start
 
 ```bash
 npm run check
+npm run security:scan
 ```
 
-The check script validates JavaScript syntax and JSON module files.
+The check script validates JavaScript syntax and JSON module files. The security scan looks for obvious tracked secrets, private keys, cookie databases, and local env files.
 
 ## Build
 
@@ -48,8 +49,21 @@ Module types:
 
 Use `modules/_TEMPLATE.json` as the file format reference.
 
+## Privacy And Security
+
+BrainrotMaxxing is a local Electron app. It does not intentionally upload layouts, cookies, terminal output, or user modules to a backend controlled by this project.
+
+Sensitive local features:
+
+- Web tiles load third-party sites in Electron `webview` sessions.
+- Terminal tiles run local commands with your user permissions.
+- The Chrome cookie import helper is optional, local-only, and may request macOS Keychain access to decrypt Chrome cookies before copying matching cookies into this app's Electron session.
+
+Review [PRIVACY.md](PRIVACY.md) before using cookie import or running untrusted module definitions. Report vulnerabilities through [SECURITY.md](SECURITY.md), not public issues.
+
 ## Repository Notes
 
 - `node_modules/`, `dist/`, and `BrainrotMaxxing.app` are ignored.
+- `.env`, cookie databases, signing keys, certificates, and local browser data are ignored.
 - Commit source files, module JSON files, `package.json`, and `package-lock.json`.
 - License is not declared yet. Add a `LICENSE` file before publishing publicly if you want others to use or redistribute the project under specific terms.

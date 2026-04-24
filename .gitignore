@@ -1,6 +1,8 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+*.swp
+*.swo
 
 node_modules/
 dist/
@@ -14,6 +16,21 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+*.provisionprofile
+id_rsa
+id_dsa
+id_ecdsa
+id_ed25519
+Cookies
+Cookies-journal
+*.sqlite
+*.sqlite3
+*.db
 
 coverage/
 .nyc_output/

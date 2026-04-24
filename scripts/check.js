@@ -12,6 +12,7 @@ const jsFiles = [
   'webview-preload.js',
   'scripts/check.js',
   'scripts/fix-node-pty-unpack.js',
+  'scripts/security-scan.js',
 ];
 
 for (const file of jsFiles) {

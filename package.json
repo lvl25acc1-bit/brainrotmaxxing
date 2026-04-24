@@ -15,6 +15,7 @@
   "scripts": {
     "start": "electron .",
     "check": "node scripts/check.js",
+    "security:scan": "node scripts/security-scan.js",
     "postinstall": "electron-rebuild -f -w node-pty || true",
     "build": "electron-packager . BrainrotMaxxing --platform=darwin --overwrite --out=dist --icon=assets/icon.icns --prune=true --ignore='^/dist($|/)' --ignore='^/BrainrotMaxxing\\.app$' --ignore='^/\\.DS_Store$' && node scripts/fix-node-pty-unpack.js"
   },
