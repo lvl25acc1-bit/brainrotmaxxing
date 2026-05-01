@@ -25,7 +25,7 @@
   "devDependencies": {
     "@electron/packager": "^19.1.0",
     "@electron/rebuild": "^4.0.4",
-    "electron": "^41.2.2"
+    "electron": "^41.4.0"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.10.0",
